@@ -1,6 +1,6 @@
 import moment from "moment";
-import { MIN_DISTANCE, MIN_DURATION } from "./constants";
-import { ValidateData } from "./types/types";
+import { MIN_DISTANCE, MIN_DURATION } from "../constants";
+import { ValidateData } from "../types/types";
 
 /**
  * Validate CSV data
