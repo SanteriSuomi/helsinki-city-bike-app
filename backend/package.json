@@ -1,21 +1,25 @@
 {
 	"name": "helsinki-city-bike-app-backend",
 	"version": "1.0.0",
-	"description": "Helsinki city bike",
+	"description": "Helsinki city bike app",
 	"main": "dist/index.js",
 	"scripts": {
-		"start": "npx tsc && node .",
+		"start": "tsc && node .",
 		"dev": "conc \"tsc --watch\" \"nodemon .\" ",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"author": "Santeri Suomi",
 	"license": "ISC",
 	"dependencies": {
-		"express": "^4.18.2"
+		"dotenv": "^16.0.3",
+		"express": "^4.18.2",
+		"pg": "^8.8.0"
 	},
 	"devDependencies": {
 		"@tsconfig/recommended": "^1.0.1",
 		"@types/express": "^4.17.15",
+		"@types/pg": "^8.6.6",
+		"concurrently": "^7.6.0",
 		"nodemon": "^2.0.20",
 		"ts-node": "^10.9.1",
 		"typescript": "^4.9.4"

@@ -1,12 +1,22 @@
 import express from "express";
+import env from "dotenv";
+import { Database } from "./db/db";
+import { Client } from "pg";
 
-const app = express();
-const port = 3000;
+env.config();
 
-app.get("/", (req, res) => {
-	res.send("Hello World!");
-});
+new Database().connect((error: Error | null, client: Client) => {
+	if (error) {
+		return console.error(error);
+	}
 
-app.listen(port, () => {
-	console.log(`App listening on port ${port}`);
+	const app = express();
+
+	app.get("/", (req, res) => {
+		res.send("Hello World!");
+	});
+
+	app.listen(process.env.APP_PORT, () => {
+		console.log(`App listening on port ${process.env.APP_PORT}`);
+	});
 });
