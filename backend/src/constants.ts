@@ -1,0 +1,4 @@
+const MIN_DISTANCE = 10;
+const MIN_DURATION = 10;
+
+export { MIN_DISTANCE, MIN_DURATION };
