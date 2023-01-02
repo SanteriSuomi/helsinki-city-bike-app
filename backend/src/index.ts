@@ -2,28 +2,29 @@ import express from "express";
 import env from "dotenv";
 import { Database } from "./db/db";
 import { Client } from "pg";
-import { retrieveData } from "./data/retrieve";
+import retrieve from "./data/retrieve";
+import { HSL_VALIDATION_RULES } from "./constants";
 
 env.config();
 
-new Database().connect((dbError: Error | null, client: Client) => {
+new Database().connect(async (dbError: Error | null, client: Client) => {
 	if (dbError) {
 		return console.error(dbError);
 	}
 
-	retrieveData((dataError?: string | void[]) => {
-		if (dataError) {
-			return console.error(dataError);
-		}
+	try {
+		await retrieve(process.env.APP_HSL_DATA, HSL_VALIDATION_RULES);
+	} catch (appError) {
+		return console.error(appError);
+	}
 
-		const app = express();
+	const app = express();
 
-		app.get("/", (req, res) => {
-			res.send("Hello World!");
-		});
+	app.get("/", (req, res) => {
+		res.send("Hello World!");
+	});
 
-		app.listen(process.env.APP_PORT, () => {
-			console.log(`App listening on port ${process.env.APP_PORT}`);
-		});
+	app.listen(process.env.APP_PORT, () => {
+		console.log(`App listening on port ${process.env.APP_PORT}`);
 	});
 });

@@ -9,9 +9,17 @@ type Journey = {
 	duration: number;
 };
 
-type ValidateData = {
-	valid: boolean;
-	journey?: Journey;
+type ValidationRule = {
+	index?: number;
+	isString?: boolean;
+	isNumber?: boolean;
+	isDate?: boolean;
+	custom?: (field: string) => boolean;
 };
 
-export { Journey, ValidateData };
+type ValidationData = {
+	valid: boolean;
+	object?: any;
+};
+
+export { Journey, ValidationRule, ValidationData };

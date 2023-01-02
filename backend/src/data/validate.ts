@@ -1,72 +1,43 @@
 import moment from "moment";
-import { MIN_DISTANCE, MIN_DURATION } from "../constants";
-import { ValidateData } from "../types/types";
+import { ValidationRule, ValidationData } from "../types/types";
 
 /**
- * Validate CSV data
- * @param csv CSV data
- * @param i Index of the row that should be validated
- * @returns True if valid, also returns the data as an object
+ * Validate a row of csv data
+ * @param data Row array where each column is a point of data
+ * @param rules Rules applied to this row for validation
+ * @returns True if valid and the constructed object of the row
  */
-export default function validate(csv: any, i: number): ValidateData {
-	const departureDate = csv[i][0];
-	const returnDate = csv[i][1];
-	const departureStationId = csv[i][2];
-	const departureStationName = csv[i][3];
-	const returnStationId = csv[i][4];
-	const returnStationName = csv[i][5];
-	const coveredDistance = csv[i][6];
-	const duration = csv[i][7];
-
-	const valid =
-		validateStrings(
-			departureDate,
-			returnDate && departureStationName,
-			returnStationName
-		) &&
-		validateDates(departureDate, returnDate) &&
-		validateNumbers(
-			departureStationId,
-			returnStationId,
-			coveredDistance,
-			duration
-		) &&
-		coveredDistance >= MIN_DISTANCE &&
-		duration >= MIN_DURATION;
-
-	if (valid) {
-		return {
-			valid: true,
-			journey: {
-				departureDate: departureDate,
-				returnDate: returnDate,
-				departureStationId: departureStationId,
-				departureStationName: departureStationName,
-				returnStationId: returnStationId,
-				returnStationName: returnStationName,
-				coveredDistance: coveredDistance,
-				duration: duration,
-			},
-		};
+export default function validate(
+	data: string[],
+	rules: ValidationRule[]
+): ValidationData {
+	for (const [index, rule] of rules.entries()) {
+		const field = data[rule.index ?? index];
+		if (rule.isString) {
+			if (!validateStrings(field)) return { valid: false };
+		}
+		if (rule.isNumber) {
+			if (!validateNumbers(field)) return { valid: false };
+		}
+		if (rule.isDate) {
+			if (!validateDates(field)) return { valid: false };
+		}
+		if (rule.custom && !rule.custom(field)) return { valid: false };
 	}
-	return { valid: false };
+	return {
+		valid: true,
+		object: data,
+	};
 }
 
 /**
- * Validate start & end dates (e.g departure and return)
- * @param start Start date
- * @param end End date
- * @returns True if dates are valid
+ * Validate date string (whether the string indeed represents a date)
+ * @param date Date string
+ * @returns True if date is valid
  */
-function validateDates(start: string, end: string) {
-	if (!start || !end) return false;
-	const startMoment = moment(start);
-	const endMoment = moment(end);
-	return (
-		startMoment.isValid() &&
-		endMoment.isValid() &&
-		startMoment.isBefore(endMoment)
-	);
+function validateDates(date: string) {
+	if (!date) return false;
+	return moment(date).isValid();
 }
 
 /**
