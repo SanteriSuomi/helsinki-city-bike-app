@@ -6,11 +6,7 @@ import { JOURNEYS_VALIDATION_RULES } from "./constants";
 
 env.config();
 
-new Database().connect(async (dbError: Error | null, db: Database) => {
-	if (dbError) {
-		return console.error(dbError);
-	}
-
+new Database(async (db: Database) => {
 	try {
 		const created = await db.createTables();
 		if (created) {

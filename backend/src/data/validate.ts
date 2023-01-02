@@ -1,5 +1,5 @@
 import moment from "moment";
-import { ValidationRule, ValidationData } from "../types/types";
+import { ValidationRule } from "../types/types";
 
 /**
  * Validate a row of csv data
@@ -7,27 +7,21 @@ import { ValidationRule, ValidationData } from "../types/types";
  * @param rules Rules applied to this row for validation
  * @returns True if valid and the data as a string delimited by commas (ready for an insert query)
  */
-export default function validate(
-	data: string[],
-	rules: ValidationRule[]
-): ValidationData {
+export default function validate(data: string[], rules: ValidationRule[]) {
 	for (const [index, rule] of rules.entries()) {
 		const field = data[rule.index ?? index];
 		if (rule.isString) {
-			if (!validateStrings(field)) return { valid: false };
+			if (!validateStrings(field)) return false;
 		}
 		if (rule.isNumber) {
-			if (!validateNumbers(field)) return { valid: false };
+			if (!validateNumbers(field)) return false;
 		}
 		if (rule.isDate) {
-			if (!validateDates(field)) return { valid: false };
+			if (!validateDates(field)) return false;
 		}
-		if (rule.custom && !rule.custom(field)) return { valid: false };
+		if (rule.custom && !rule.custom(field)) return false;
 	}
-	return {
-		valid: true,
-		row: data,
-	};
+	return true;
 }
 
 /**

@@ -17,9 +17,4 @@ type ValidationRule = {
 	custom?: (field: string) => boolean;
 };
 
-type ValidationData = {
-	valid: boolean;
-	row?: string[];
-};
-
-export { Journey, ValidationRule, ValidationData };
+export { Journey, ValidationRule };

@@ -1,24 +1,21 @@
-import { Client } from "pg";
+import { Pool, PoolClient } from "pg";
 
 /**
- * Database object
+ * Database class where all database manipulation methods are stored
  */
 export default class Database {
-	private client: Client;
+	private pool: Pool;
 
-	constructor() {
-		this.client = new Client({
+	constructor(onConnection: (db: Database) => void) {
+		this.pool = new Pool({
 			host: process.env.DB_HOST,
 			port: Number(process.env.DB_PORT),
 			user: process.env.DB_USER,
 			password: process.env.DB_PASS,
+			min: 5,
+			max: 50,
 		});
-	}
-
-	connect(onConnection: (error: Error | null, db: Database) => void) {
-		this.client.connect(async (error: Error) => {
-			onConnection(error, this);
-		});
+		onConnection(this);
 	}
 
 	/**
@@ -42,12 +39,27 @@ export default class Database {
 		return false;
 	}
 
-	async query(query: string) {
-		return this.client.query(query);
+	async connect() {
+		return await this.pool.connect();
 	}
 
-	async queryValues(query: string, values: string[]) {
-		return this.client.query({
+	async query(query: string) {
+		return await this.pool.query(query);
+	}
+
+	async queryValues(query: string, values?: string[]) {
+		return await this.pool.query({
+			text: query,
+			values: values,
+		});
+	}
+
+	async queryValuesClient(
+		client: PoolClient,
+		query: string,
+		values?: string[]
+	) {
+		return await client.query({
 			text: query,
 			values: values,
 		});

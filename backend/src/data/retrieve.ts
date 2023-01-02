@@ -22,6 +22,7 @@ export default async function retrieve(
 		splitUrls.map(async (url: string) => {
 			const data = await fetchData(url);
 			let firstLineParsed = false;
+
 			Papa.parse(data, {
 				skipEmptyLines: "greedy",
 				step: async (row, parser) => {
@@ -29,9 +30,9 @@ export default async function retrieve(
 						return (firstLineParsed = true);
 					}
 					parser.pause();
-					const validation = validate(row.data as any[], rules);
-					if (validation.valid && validation.row) {
-						await db.queryValues(storeQuery, validation.row);
+					const rowData = row.data as string[];
+					if (validate(rowData, rules)) {
+						await db.queryValues(storeQuery, rowData);
 					}
 					parser.resume();
 				},
