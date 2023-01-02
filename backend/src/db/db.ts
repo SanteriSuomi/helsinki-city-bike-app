@@ -1,6 +1,9 @@
 import { Client } from "pg";
 
-export class Database {
+/**
+ * Database object
+ */
+export default class Database {
 	private client: Client;
 
 	constructor() {
@@ -12,9 +15,41 @@ export class Database {
 		});
 	}
 
-	connect(onConnection: (error: Error | null, client: Client) => void) {
-		this.client.connect((error: Error) => {
-			onConnection(error, this.client);
+	connect(onConnection: (error: Error | null, db: Database) => void) {
+		this.client.connect(async (error: Error) => {
+			onConnection(error, this);
+		});
+	}
+
+	/**
+	 * Create tables if they do not exist
+	 * @returns True if didn't exist and was created
+	 */
+	async createTables() {
+		const query = await this.query(`SELECT EXISTS (
+            SELECT FROM
+                pg_tables
+            WHERE
+                schemaname = 'public' AND
+                tablename  = '${process.env.APP_JOURNEYS_TABLE}'
+            )`);
+		if (!(query.rows[0] as any).exists) {
+			await this.query(
+				process.env.APP_JOURNEYS_TABLE_CREATE_QUERY as string
+			);
+			return true;
+		}
+		return false;
+	}
+
+	async query(query: string) {
+		return this.client.query(query);
+	}
+
+	async queryValues(query: string, values: string[]) {
+		return this.client.query({
+			text: query,
+			values: values,
 		});
 	}
 }

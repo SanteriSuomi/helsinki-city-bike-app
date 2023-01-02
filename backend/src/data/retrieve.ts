@@ -1,4 +1,5 @@
 import Papa from "papaparse";
+import Database from "../db/db";
 import { ValidationRule } from "../types/types";
 import validate from "./validate";
 
@@ -9,10 +10,12 @@ import validate from "./validate";
  * @throws {Error} Misc. errors
  */
 export default async function retrieve(
+	db: Database,
 	urls: string | undefined,
-	rules: ValidationRule[]
+	rules: ValidationRule[],
+	storeQuery: string
 ) {
-	if (!urls) throw new Error("Urls are undefined");
+	if (!urls) throw new Error("Urls undefined");
 
 	const splitUrls = urls.split(" ");
 	await Promise.all(
@@ -21,14 +24,16 @@ export default async function retrieve(
 			let firstLineParsed = false;
 			Papa.parse(data, {
 				skipEmptyLines: "greedy",
-				step: (row, _parser) => {
+				step: async (row, parser) => {
 					if (!firstLineParsed) {
 						return (firstLineParsed = true);
 					}
-					const validation = validate(row.data as any, rules);
-					if (validation.valid) {
-						// TODO: store data in postgres database
+					parser.pause();
+					const validation = validate(row.data as any[], rules);
+					if (validation.valid && validation.row) {
+						await db.queryValues(storeQuery, validation.row);
 					}
+					parser.resume();
 				},
 			});
 		})

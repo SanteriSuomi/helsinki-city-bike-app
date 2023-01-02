@@ -1,21 +1,28 @@
 import express from "express";
 import env from "dotenv";
-import { Database } from "./db/db";
-import { Client } from "pg";
+import Database from "./db/db";
 import retrieve from "./data/retrieve";
-import { HSL_VALIDATION_RULES } from "./constants";
+import { JOURNEYS_VALIDATION_RULES } from "./constants";
 
 env.config();
 
-new Database().connect(async (dbError: Error | null, client: Client) => {
+new Database().connect(async (dbError: Error | null, db: Database) => {
 	if (dbError) {
 		return console.error(dbError);
 	}
 
 	try {
-		await retrieve(process.env.APP_HSL_DATA, HSL_VALIDATION_RULES);
-	} catch (appError) {
-		return console.error(appError);
+		const created = await db.createTables();
+		if (created) {
+			await retrieve(
+				db,
+				process.env.APP_JOURNEYS_DATA,
+				JOURNEYS_VALIDATION_RULES,
+				`INSERT INTO ${process.env.APP_JOURNEYS_TABLE} VALUES($1, $2, $3, $4, $5, $6, $7, $8)`
+			);
+		}
+	} catch (retrieveError) {
+		return console.error(retrieveError);
 	}
 
 	const app = express();

@@ -5,7 +5,7 @@ import { ValidationRule, ValidationData } from "../types/types";
  * Validate a row of csv data
  * @param data Row array where each column is a point of data
  * @param rules Rules applied to this row for validation
- * @returns True if valid and the constructed object of the row
+ * @returns True if valid and the data as a string delimited by commas (ready for an insert query)
  */
 export default function validate(
 	data: string[],
@@ -26,7 +26,7 @@ export default function validate(
 	}
 	return {
 		valid: true,
-		object: data,
+		row: data,
 	};
 }
 

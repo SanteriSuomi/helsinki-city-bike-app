@@ -1,7 +1,7 @@
 const MIN_DISTANCE = 10;
 const MIN_DURATION = 10;
 
-const HSL_VALIDATION_RULES = [
+const JOURNEYS_VALIDATION_RULES = [
 	{
 		isString: true,
 		isDate: true,
@@ -42,4 +42,4 @@ const HSL_VALIDATION_RULES = [
 	},
 ];
 
-export { MIN_DISTANCE, MIN_DURATION, HSL_VALIDATION_RULES };
+export { MIN_DISTANCE, MIN_DURATION, JOURNEYS_VALIDATION_RULES };

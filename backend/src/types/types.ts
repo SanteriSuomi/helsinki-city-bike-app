@@ -19,7 +19,7 @@ type ValidationRule = {
 
 type ValidationData = {
 	valid: boolean;
-	object?: any;
+	row?: string[];
 };
 
 export { Journey, ValidationRule, ValidationData };
