@@ -1,19 +1,18 @@
 import Papa from "papaparse";
-import Database from "../db/db";
 import { ValidationRule } from "../types/types";
 import validate from "./validate";
 
 /**
  * Retrieve CSV data from a list of urls and validate them
  * @param urls String of urls where each url is split by a space ' '
- * @param rules List of rules where each of the rules is applied to every row of the data
+ * @param rules List of validation rules where each of the rules is applied to every row of the data
+ * @param storeData Custom function applied to every row of validated data, e.g for storing data in the database
  * @throws {Error} Misc. errors
  */
-export default async function retrieve(
-	db: Database,
+export default async function initializeData(
 	urls: string | undefined,
 	rules: ValidationRule[],
-	storeQuery: string
+	storeData: (rowData: string[]) => Promise<void>
 ) {
 	if (!urls) throw new Error("Urls undefined");
 
@@ -27,12 +26,13 @@ export default async function retrieve(
 				skipEmptyLines: "greedy",
 				step: async (row, parser) => {
 					if (!firstLineParsed) {
-						return (firstLineParsed = true);
+						firstLineParsed = true;
+						return;
 					}
 					parser.pause();
 					const rowData = row.data as string[];
 					if (validate(rowData, rules)) {
-						await db.queryValues(storeQuery, rowData);
+						await storeData(rowData);
 					}
 					parser.resume();
 				},

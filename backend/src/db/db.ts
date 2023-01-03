@@ -6,7 +6,7 @@ import { Pool, PoolClient } from "pg";
 export default class Database {
 	private pool: Pool;
 
-	constructor(onConnection: (db: Database) => void) {
+	constructor() {
 		this.pool = new Pool({
 			host: process.env.DB_HOST,
 			port: Number(process.env.DB_PORT),
@@ -15,32 +15,48 @@ export default class Database {
 			min: 5,
 			max: 50,
 		});
-		onConnection(this);
+	}
+
+	static instantiate(onConnection: (db: Database) => void) {
+		onConnection(new Database());
 	}
 
 	/**
 	 * Create tables if they do not exist
 	 * @returns True if didn't exist and was created
 	 */
-	async createTables() {
+	async initializeTables() {
+		let created = false;
+		if (!(await this.tableExists(process.env.APP_JOURNEYS_TABLE!))) {
+			await this.query(process.env.APP_JOURNEYS_TABLE_CREATE_QUERY!);
+			created = true;
+			console.log("Table journeys created");
+		}
+		if (!(await this.tableExists(process.env.APP_STATIONS_TABLE!))) {
+			await this.query(process.env.APP_STATIONS_TABLE_CREATE_QUERY!);
+			created = true;
+			console.log("Table stations created");
+		}
+		return created;
+	}
+
+	async tableExists(name: string) {
 		const query = await this.query(`SELECT EXISTS (
             SELECT FROM
                 pg_tables
             WHERE
                 schemaname = 'public' AND
-                tablename  = '${process.env.APP_JOURNEYS_TABLE}'
+                tablename  = '${name}'
             )`);
-		if (!(query.rows[0] as any).exists) {
-			await this.query(
-				process.env.APP_JOURNEYS_TABLE_CREATE_QUERY as string
-			);
-			return true;
-		}
-		return false;
+		return query.rows[0].exists;
 	}
 
-	async connect() {
-		return await this.pool.connect();
+	async entryExists(column: string, value: string) {
+		const query = await this.queryValues(
+			`SELECT * FROM ${process.env.APP_STATIONS_TABLE} WHERE ${column} = $1`,
+			[value]
+		);
+		return query.rowCount > 0;
 	}
 
 	async query(query: string) {
@@ -49,17 +65,6 @@ export default class Database {
 
 	async queryValues(query: string, values?: string[]) {
 		return await this.pool.query({
-			text: query,
-			values: values,
-		});
-	}
-
-	async queryValuesClient(
-		client: PoolClient,
-		query: string,
-		values?: string[]
-	) {
-		return await client.query({
 			text: query,
 			values: values,
 		});
