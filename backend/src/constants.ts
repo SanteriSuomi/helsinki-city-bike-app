@@ -1,7 +1,7 @@
-const MIN_DISTANCE = 10;
-const MIN_DURATION = 10;
+const JOURNEY_MIN_DISTANCE = 10;
+const JOURNEY_MIN_DURATION = 10;
 
-const DATA_VALIDATION_RULES = [
+const APP_DATA_JOURNEYS_VALIDATION_RULES = [
 	{
 		isString: true,
 		isDate: true,
@@ -14,32 +14,68 @@ const DATA_VALIDATION_RULES = [
 		isNumber: true,
 	},
 	{
-		isString: true,
-	},
-	{
+		index: 4,
 		isNumber: true,
 	},
 	{
-		isString: true,
-	},
-	{
+		index: 6,
 		isNumber: true,
 	},
 	{
+		index: 7,
 		isNumber: true,
 	},
 	{
 		index: 6,
 		custom: (field: string) => {
-			return Number(field) >= MIN_DISTANCE;
+			return Number(field) >= JOURNEY_MIN_DISTANCE;
 		},
 	},
 	{
 		index: 7,
 		custom: (field: string) => {
-			return Number(field) >= MIN_DURATION;
+			return Number(field) >= JOURNEY_MIN_DURATION;
 		},
 	},
 ];
 
-export { MIN_DISTANCE, MIN_DURATION, DATA_VALIDATION_RULES };
+const APP_DATA_STATIONS_VALIDATION_RULES = [
+	{
+		isNumber: true,
+	},
+	{
+		index: 1,
+		isString: true,
+	},
+	{
+		index: 4,
+		isString: true,
+	},
+	{
+		index: 6,
+		isString: true,
+	},
+	{
+		index: 8,
+		isString: true,
+	},
+	{
+		index: 9,
+		isNumber: true,
+	},
+	{
+		index: 10,
+		isNumber: true,
+	},
+	{
+		index: 11,
+		isNumber: true,
+	},
+];
+
+export {
+	JOURNEY_MIN_DISTANCE,
+	JOURNEY_MIN_DURATION,
+	APP_DATA_JOURNEYS_VALIDATION_RULES,
+	APP_DATA_STATIONS_VALIDATION_RULES,
+};
