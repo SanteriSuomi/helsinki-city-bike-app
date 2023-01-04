@@ -13,9 +13,15 @@ export default {
 			content: "",
 		});
 	},
+	badRequestError(res: Response, error: any) {
+		res.status(400).json({
+			message: "Bad Request",
+			content: error,
+		});
+	},
 	internalError(res: Response, error: any) {
 		res.status(500).json({
-			message: "Internal Error",
+			message: "Bad Request or Internal Error - See Content",
 			content: error,
 		});
 	},

@@ -1,9 +1,9 @@
 import { Request } from "express";
 
 /**
- * Build SQL query parameter string from query parameters supplied to the HTTP request
- * @param req HTTP request
- * @returns Parameters in string format ready for SQL
+ * Build an SQL query parameter string from query parameters supplied to the HTTP request
+ * @param req Request
+ * @returns Parameters in string format ready for SQL queries
  */
 function buildQueryParameters(req: Request) {
 	const { column, order, offset, limit } = req.query;
@@ -23,21 +23,48 @@ function buildQueryParameters(req: Request) {
 	return params;
 }
 
+/**
+ * Build an SQL query parameter string from request parameters
+ * @param req Request
+ * @returns Parameters in string format ready for SQL queries
+ */
 function buildRouteParametersColumn(req: Request) {
 	const { column, query } = req.params;
 	return ` WHERE ${column} = ${query} `;
 }
 
-function buildRouteParametersSearch(req: Request) {
+/**
+ * Build pattern-matching (substring) search SQL query parameter string
+ * @param req Request
+ * @param columns Columns on which the query string is matched
+ * @returns Parameters in SQL format ready for SQL queries
+ */
+function buildRouteParametersSearch(
+	req: Request,
+	stringColumns: string[],
+	numberColumns: string[]
+) {
 	const { query } = req.params;
 	if (Number.isNaN(query)) {
-		return `WHERE departure_station_id = ${query}
-        OR return_station_id = ${query}
-        OR covered_distance = ${query}
-        OR duration = ${query}`;
+		return buildQueryStringNumber(query, numberColumns);
 	}
-	return `WHERE departure_date ILIKE '%${query}%'
-    OR return_date ILIKE '%${query}%'`;
+	return buildQueryString(query, stringColumns);
+}
+
+function buildQueryStringNumber(query: string, columns: string[]) {
+	let queryString = `WHERE ${columns[0]} = ${query}`;
+	for (let i = 1; i < columns.length; i++) {
+		queryString += ` OR ${columns[i]} = ${query}`;
+	}
+	return queryString;
+}
+
+function buildQueryString(query: string, columns: string[]) {
+	let queryString = `WHERE ${columns[0]} ILIKE '%${query}%'`;
+	for (let i = 1; i < columns.length; i++) {
+		queryString += ` OR ${columns[0]} ILIKE '%${query}%'`;
+	}
+	return queryString;
 }
 
 export {
