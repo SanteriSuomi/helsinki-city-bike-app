@@ -23,6 +23,8 @@ async function getAll(req: Request, res: Response, table: string) {
 	}
 	try {
 		const queryResult = await Database.instance.query(queryString);
+		console.log(queryResult.rowCount);
+
 		if (queryResult.rowCount > 0) {
 			return response.successData(res, queryResult.rows);
 		}
@@ -94,4 +96,26 @@ async function getSearch(
 	response.successEmpty(res);
 }
 
-export { getAll, getColumnQuery, getSearch };
+/**
+ * Get the number of rows in given table
+ * @param res Response
+ * @param table Table
+ * @param column Column (can be any column)
+ * @returns Total row count
+ */
+async function getCount(res: Response, table: string, column: string) {
+	let queryString;
+	try {
+		queryString = `SELECT COUNT(${column}) FROM ${table}`;
+	} catch (error) {
+		return response.badRequestError(res, (error as any).message);
+	}
+	try {
+		const queryResult = await Database.instance.query(queryString);
+		return response.successData(res, queryResult.rows[0].count);
+	} catch (error) {
+		return response.internalError(res, (error as any).message);
+	}
+}
+
+export { getAll, getColumnQuery, getSearch, getCount };
