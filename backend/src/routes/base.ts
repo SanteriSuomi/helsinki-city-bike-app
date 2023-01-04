@@ -12,26 +12,35 @@ import {
  * @param req Request
  * @param res Response
  * @param table Table to search
+ * @param column Column (can be any column) used for getting total row count
  * @returns All rows if any
  */
-async function getAll(req: Request, res: Response, table: string) {
+async function getAll(
+	req: Request,
+	res: Response,
+	table: string,
+	column: string
+) {
 	let queryString;
+	let countQueryString;
 	try {
 		queryString = `SELECT * FROM ${table} ${buildQueryParameters(req)}`;
+		countQueryString = `SELECT COUNT(${column}) FROM ${table}`;
 	} catch (error) {
 		return response.badRequestError(res, (error as any).message);
 	}
 	try {
 		const queryResult = await Database.instance.query(queryString);
-		console.log(queryResult.rowCount);
-
-		if (queryResult.rowCount > 0) {
-			return response.successData(res, queryResult.rows);
-		}
+		const countQueryResult = await Database.instance.query(
+			countQueryString
+		);
+		return response.successData(res, {
+			totalCount: countQueryResult.rows[0].count,
+			items: queryResult.rows,
+		});
 	} catch (error) {
 		return response.internalError(res, (error as any).message);
 	}
-	response.successEmpty(res);
 }
 
 /**
@@ -96,26 +105,4 @@ async function getSearch(
 	response.successEmpty(res);
 }
 
-/**
- * Get the number of rows in given table
- * @param res Response
- * @param table Table
- * @param column Column (can be any column)
- * @returns Total row count
- */
-async function getCount(res: Response, table: string, column: string) {
-	let queryString;
-	try {
-		queryString = `SELECT COUNT(${column}) FROM ${table}`;
-	} catch (error) {
-		return response.badRequestError(res, (error as any).message);
-	}
-	try {
-		const queryResult = await Database.instance.query(queryString);
-		return response.successData(res, queryResult.rows[0].count);
-	} catch (error) {
-		return response.internalError(res, (error as any).message);
-	}
-}
-
-export { getAll, getColumnQuery, getSearch, getCount };
+export { getAll, getColumnQuery, getSearch };

@@ -1,10 +1,15 @@
 import express from "express";
-import { getAll, getColumnQuery, getCount, getSearch } from "./base";
+import { getAll, getColumnQuery, getSearch } from "./base";
 
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-	await getAll(req, res, process.env.APP_JOURNEYS_TABLE!);
+	await getAll(
+		req,
+		res,
+		process.env.APP_JOURNEYS_TABLE!,
+		process.env.APP_JOURNEYS_TABLE_STRING_COLUMNS!.split(" ")[0]
+	);
 });
 
 router.get("/:column-:query", async (req, res) => {
@@ -18,14 +23,6 @@ router.get("/search/:query", async (req, res) => {
 		process.env.APP_JOURNEYS_TABLE!,
 		process.env.APP_JOURNEYS_TABLE_STRING_COLUMNS!.split(" "),
 		process.env.APP_JOURNEYS_TABLE_NUMBER_COLUMNS!.split(" ")
-	);
-});
-
-router.get("/count", async (_req, res) => {
-	await getCount(
-		res,
-		process.env.APP_JOURNEYS_TABLE!,
-		process.env.APP_JOURNEYS_TABLE_STRING_COLUMNS!.split(" ")[0]
 	);
 });
 
