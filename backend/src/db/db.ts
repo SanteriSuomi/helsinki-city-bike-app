@@ -1,10 +1,11 @@
-import { Pool, PoolClient } from "pg";
+import { Pool } from "pg";
 
 /**
  * Database class where all database manipulation methods are stored
  */
 export default class Database {
 	private pool: Pool;
+	static instance: Database;
 
 	constructor() {
 		this.pool = new Pool({
@@ -18,7 +19,10 @@ export default class Database {
 	}
 
 	static instantiate(onConnection: (db: Database) => void) {
-		onConnection(new Database());
+		if (!Database.instance) {
+			Database.instance = new Database();
+		}
+		onConnection(Database.instance);
 	}
 
 	/**

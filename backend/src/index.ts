@@ -6,6 +6,8 @@ import {
 	APP_DATA_JOURNEYS_VALIDATION_RULES,
 	APP_DATA_STATIONS_VALIDATION_RULES,
 } from "./constants";
+import journeyRouter from "./routes/journeys";
+import stationsRouter from "./routes/stations";
 
 env.config();
 
@@ -15,13 +17,12 @@ async function startApp(db: Database) {
 	await setupDatabaseData(db);
 
 	const app = express();
-
-	app.get("/", (req, res) => {
-		res.send("Hello World!");
-	});
-
+	app.use("/journeys", journeyRouter);
+	app.use("/stations", stationsRouter);
 	app.listen(process.env.APP_PORT, () => {
-		console.log(`App listening on port ${process.env.APP_PORT}`);
+		console.log(
+			`Listening to incoming connections on port ${process.env.APP_PORT}`
+		);
 	});
 }
 

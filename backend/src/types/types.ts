@@ -2,11 +2,19 @@ type Journey = {
 	departureDate: string;
 	returnDate: string;
 	departureStationId: number;
-	departureStationName: string;
 	returnStationId: number;
-	returnStationName: string;
 	coveredDistance: number;
 	duration: number;
+};
+
+type Station = {
+	id: number;
+	name: string;
+	address: string;
+	city: string;
+	operator: string;
+	x: number;
+	y: number;
 };
 
 type ValidationRule = {
@@ -17,4 +25,4 @@ type ValidationRule = {
 	custom?: (field: string) => boolean;
 };
 
-export { Journey, ValidationRule };
+export { Journey, Station, ValidationRule };
