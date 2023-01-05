@@ -7,6 +7,7 @@ import {
 	buildRouteParametersColumn,
 	buildRouteParametersSearch,
 } from "./utils/queries";
+import { DatabaseBaseObject } from "../types/types";
 
 /**
  * Include generic endpoint query functions such as get all, search
@@ -115,4 +116,51 @@ async function getSearch(
 	response.successEmpty(res);
 }
 
-export { getAll, getColumnQuery, getSearch };
+/**
+ * Insert a new object into the database
+ * @param req Request
+ * @param res Response
+ * @param getObject Custom function that returns the object from request body
+ * @param checkQueryString Query string that checks if the object already exists
+ * @param queryString Insert query string
+ * @returns All rows inserted in the database if any
+ */
+async function postInsert<T extends DatabaseBaseObject>(
+	req: Request,
+	res: Response,
+	getObject: (body: any) => T,
+	checkQueryString: string,
+	queryString: string
+) {
+	let object: T | undefined;
+	try {
+		object = getObject(req.body);
+		if (!object || object.hasEmptyProperties()) {
+			return response.badRequestError(
+				res,
+				"Body is not valid - must be conform to the T object type"
+			);
+		}
+	} catch (error) {
+		return response.badRequestError(res, (error as any).message);
+	}
+	try {
+		const checkQueryResult = await Database.instance.querySafe(
+			checkQueryString,
+			object.toArray()
+		);
+		if (checkQueryResult.rowCount > 0) {
+			return response.neutralConflict(res);
+		}
+		console.log(queryString);
+		const queryResult = await Database.instance.querySafe(
+			queryString,
+			object.toArray()
+		);
+		return response.successCreated(res, queryResult.rows);
+	} catch (error) {
+		return response.internalError(res, (error as any).message);
+	}
+}
+
+export { getAll, getColumnQuery, getSearch, postInsert };

@@ -8,6 +8,7 @@ import {
 } from "./constants";
 import journeyRouter from "./routes/journeys";
 import stationsRouter from "./routes/stations";
+import bodyParser from "body-parser";
 
 env.config();
 
@@ -17,6 +18,7 @@ async function startApp(db: Database) {
 	await setupDatabaseData(db);
 
 	const app = express();
+	app.use(bodyParser.json());
 	app.use("/journeys", journeyRouter);
 	app.use("/stations", stationsRouter);
 	app.listen(process.env.APP_PORT, () => {
