@@ -6,7 +6,6 @@
 	"scripts": {
 		"start": "tsc && node .",
 		"dev": "conc \"tsc --watch\" \"nodemon .\" ",
-		"debug": "npm run start",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"author": "Santeri Suomi",

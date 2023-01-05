@@ -1,4 +1,3 @@
-import moment from "moment";
 import { ValidationRule } from "../types/types";
 
 /**
@@ -24,13 +23,13 @@ function validateField(field: string, rule: ValidationRule) {
 }
 
 function validateString(field: string) {
-	return typeof field === "string";
+	return field && field.trim().length > 0;
 }
 
 function validateNumber(field: string) {
-	return !isNaN(Number(field));
+	return field.length > 0 && !isNaN(Number(field));
 }
 
 function validateDate(field: string) {
-	return !isNaN(Date.parse(field));
+	return field.length > 0 && !isNaN(Date.parse(field));
 }
