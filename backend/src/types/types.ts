@@ -1,9 +1,9 @@
 type Journey = {
-	departureDate: string;
-	returnDate: string;
-	departureStationId: number;
-	returnStationId: number;
-	coveredDistance: number;
+	departure_date: string;
+	return_date: string;
+	departure_station_id: number;
+	return_station_id: number;
+	covered_distance: number;
 	duration: number;
 };
 

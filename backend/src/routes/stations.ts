@@ -1,5 +1,7 @@
-import express from "express";
+import express, { Request, Response } from "express";
+import { STATIONS_ENDPOINT_DIRECTION_START } from "../constants";
 import Database from "../db/db";
+import { Journey } from "../types/types";
 import { getAll, getColumnQuery, getSearch } from "./base";
 import response from "./http/response";
 import { buildQueryParameters } from "./utils/utils";
@@ -30,38 +32,66 @@ router.get("/search/:query", async (req, res) => {
 });
 
 /**
- * Endpoint for getting journeys from or to station
+ * Endpoint for getting journeys from or to station count (and optionally average distance and rows themselves)
  */
 router.get("/journeys/:direction", async (req, res) => {
-	let queryString;
 	try {
 		const { direction } = req.params;
-		const { id, mode } = req.query;
-		if (direction === "start") {
+		const { id, all, avg } = req.query;
+
+		if (checkIncompatibleJourneysDirectionParameters(req, avg as string)) {
+			return response.badRequestError(
+				res,
+				"Filters not compatible with getting average - Results would not be accurate."
+			);
+		}
+
+		let queryString;
+		if (direction === STATIONS_ENDPOINT_DIRECTION_START.FROM_STATION) {
 			queryString = `SELECT * FROM ${
 				process.env.APP_JOURNEYS_TABLE
 			} WHERE departure_station_id = ${id} ${buildQueryParameters(req)}`;
-		} else if (direction === "end") {
-			queryString = `SELECT * FROM ${
-				process.env.APP_JOURNEYS_TABLE
-			} WHERE return_station_id = ${id} ${buildQueryParameters(req)}`;
 		}
-		if (!queryString) {
-			throw new Error("Parameter Direction Required: 'start' or 'end'");
-		}
+		queryString = `SELECT * FROM ${
+			process.env.APP_JOURNEYS_TABLE
+		} WHERE return_station_id = ${id} ${buildQueryParameters(req)}`;
 		const queryResult = await Database.instance.query(queryString);
-		if (mode === "all") {
-			return response.successData(res, {
-				totalCount: queryResult.rowCount,
-				items: queryResult.rows,
+
+		let returnObj: any = {};
+
+		returnObj.totalCount = queryResult.rowCount;
+
+		if (avg) {
+			let averageDistance = 0;
+			queryResult.rows.forEach((journey: Journey) => {
+				averageDistance += journey.covered_distance;
 			});
+			averageDistance /= queryResult.rowCount;
+			returnObj.averageDistance = averageDistance;
 		}
-		return response.successData(res, {
-			totalCount: queryResult.rowCount,
-		});
+
+		if (all) {
+			returnObj.items = queryResult.rows;
+		}
+		return response.successData(res, returnObj);
 	} catch (error) {
 		return response.badRequestError(res, (error as any).message);
 	}
 });
+
+/**
+ * Using filters and getting the average distance of journeys are incompatible - return bad request if they are used together
+ * @param avg Average query parameter
+ * @param req Request
+ * @param res Response
+ * @returns True if filters & avg are used together
+ */
+function checkIncompatibleJourneysDirectionParameters(
+	req: Request,
+	avg?: string
+) {
+	const { column, order, offset, limit } = req.query;
+	return avg && column && (order || offset || limit);
+}
 
 export default router;
