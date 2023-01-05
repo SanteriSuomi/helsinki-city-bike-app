@@ -1,7 +1,7 @@
 import express from "express";
 import { STATIONS_ENDPOINT_DIRECTION_START } from "../constants";
 import { getAll, getColumnQuery, getSearch, postInsert } from "./base";
-import Database from "../db/db";
+import Database from "../db/database";
 import response from "./utils/response";
 import { buildDateFilter } from "./utils/queries";
 import { Journey } from "../types/types";

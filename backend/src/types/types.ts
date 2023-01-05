@@ -55,7 +55,7 @@ type ValidationRule = {
 	isString?: boolean;
 	isNumber?: boolean;
 	isDate?: boolean;
-	custom?: (field: string) => boolean;
+	customCheck?: (field: string) => boolean;
 };
 
 export { Journey, Station, ValidationRule, DatabaseBaseObject };

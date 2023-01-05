@@ -4,7 +4,7 @@ import { STATIONS_ENDPOINT_DIRECTION_START } from "../constants";
 import { Journey, Station } from "../types/types";
 import { getAll, getColumnQuery, getSearch, postInsert } from "./base";
 import { buildDateFilter, buildQueryParameters } from "./utils/queries";
-import Database from "../db/db";
+import Database from "../db/database";
 import response from "./utils/response";
 
 const router = express.Router();

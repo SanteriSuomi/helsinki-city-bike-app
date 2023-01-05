@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import Database from "../db/db";
+import Database from "../db/database";
 import response from "./utils/response";
 import {
 	buildDateFilter,
@@ -152,7 +152,6 @@ async function postInsert<T extends DatabaseBaseObject>(
 		if (checkQueryResult.rowCount > 0) {
 			return response.neutralConflict(res);
 		}
-		console.log(queryString);
 		const queryResult = await Database.instance.querySafe(
 			queryString,
 			object.toArray()

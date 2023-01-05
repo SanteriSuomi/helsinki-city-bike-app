@@ -3,7 +3,7 @@ import { Response } from "express";
 export default {
 	successData(res: Response, data: any) {
 		res.status(200).json({
-			message: "Success - No Content",
+			message: "Success",
 			content: data,
 		});
 	},

@@ -1,6 +1,6 @@
 import express from "express";
 import env from "dotenv";
-import Database from "./db/db";
+import Database from "./db/database";
 import initializeData from "./data/retrieve";
 import {
 	APP_DATA_JOURNEYS_VALIDATION_RULES,
