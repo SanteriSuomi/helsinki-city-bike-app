@@ -8,11 +8,17 @@ import {
 } from "./utils/utils";
 
 /**
+ * Include generic endpoint query functions such as get all, search
+ */
+
+/**
  * Get all with optional query filters
  * @param req Request
  * @param res Response
  * @param table Table to search
  * @param column Column (can be any column) used for getting total row count
+ * @param queryString Optional custom query string - if none supplied, uses
+ * @param customCount Optional custom function that returns a row count given the query result
  * @returns All rows if any
  */
 async function getAll(
