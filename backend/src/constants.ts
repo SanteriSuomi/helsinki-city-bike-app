@@ -74,7 +74,7 @@ const APP_DATA_STATIONS_VALIDATION_RULES = [
 ];
 
 enum STATIONS_ENDPOINT_DIRECTION_START {
-	FROM_STATION = "start",
+	FROM_STATION = "departure",
 }
 
 export {

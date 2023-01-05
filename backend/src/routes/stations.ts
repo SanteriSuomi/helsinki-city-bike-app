@@ -1,4 +1,5 @@
-import express, { Request, Response } from "express";
+import express, { Request } from "express";
+import { QueryResult } from "pg";
 import { STATIONS_ENDPOINT_DIRECTION_START } from "../constants";
 import Database from "../db/db";
 import { Journey } from "../types/types";
@@ -32,11 +33,12 @@ router.get("/search/:query", async (req, res) => {
 });
 
 /**
- * Endpoint for getting journeys from or to station count (and optionally average distance and rows themselves)
+ * Endpoint for getting the number of journeys starting from or ending to station
+ * Optionally can give the average distance of those journeys and the data itself
  */
-router.get("/journeys/:direction", async (req, res) => {
+router.get("/journeys/:start", async (req, res) => {
 	try {
-		const { direction } = req.params;
+		const { start } = req.params;
 		const { id, all, avg } = req.query;
 
 		if (checkIncompatibleJourneysDirectionParameters(req, avg as string)) {
@@ -47,7 +49,9 @@ router.get("/journeys/:direction", async (req, res) => {
 		}
 
 		let queryString;
-		if (direction === STATIONS_ENDPOINT_DIRECTION_START.FROM_STATION) {
+		let isDeparture =
+			start === STATIONS_ENDPOINT_DIRECTION_START.FROM_STATION;
+		if (isDeparture) {
 			queryString = `SELECT * FROM ${
 				process.env.APP_JOURNEYS_TABLE
 			} WHERE departure_station_id = ${id} ${buildQueryParameters(req)}`;
@@ -57,19 +61,10 @@ router.get("/journeys/:direction", async (req, res) => {
 		} WHERE return_station_id = ${id} ${buildQueryParameters(req)}`;
 		const queryResult = await Database.instance.query(queryString);
 
-		let returnObj: any = {};
-
-		returnObj.totalCount = queryResult.rowCount;
-
+		let returnObj: any = { totalCount: queryResult.rowCount };
 		if (avg) {
-			let averageDistance = 0;
-			queryResult.rows.forEach((journey: Journey) => {
-				averageDistance += journey.covered_distance;
-			});
-			averageDistance /= queryResult.rowCount;
-			returnObj.averageDistance = averageDistance;
+			returnObj.averageDistance = await calcAverageDistance(queryResult);
 		}
-
 		if (all) {
 			returnObj.items = queryResult.rows;
 		}
@@ -92,6 +87,15 @@ function checkIncompatibleJourneysDirectionParameters(
 ) {
 	const { column, order, offset, limit } = req.query;
 	return avg && column && (order || offset || limit);
+}
+
+async function calcAverageDistance(queryResult: QueryResult) {
+	let averageDistance = 0;
+	queryResult.rows.forEach((journey: Journey) => {
+		averageDistance += journey.covered_distance;
+	});
+	averageDistance /= queryResult.rowCount;
+	return averageDistance;
 }
 
 export default router;
