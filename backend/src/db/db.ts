@@ -56,7 +56,7 @@ export default class Database {
 	}
 
 	async entryExists(column: string, value: string) {
-		const query = await this.queryValues(
+		const query = await this.querySafe(
 			`SELECT * FROM ${process.env.APP_STATIONS_TABLE} WHERE ${column} = $1`,
 			[value]
 		);
@@ -67,7 +67,7 @@ export default class Database {
 		return await this.pool.query(query);
 	}
 
-	async queryValues(query: string, values?: string[]) {
+	async querySafe(query: string, values?: string[]) {
 		return await this.pool.query({
 			text: query,
 			values: values,

@@ -35,7 +35,7 @@ async function setupDatabaseData(db: Database) {
 				process.env.APP_DATA_JOURNEYS_URLS,
 				APP_DATA_JOURNEYS_VALIDATION_RULES,
 				async (rowData: string[]) => {
-					await db.queryValues(
+					await db.querySafe(
 						`INSERT INTO ${process.env.APP_JOURNEYS_TABLE} VALUES($1, $2, $3, $4, $5, $6)`,
 						[
 							rowData[0],
@@ -54,7 +54,7 @@ async function setupDatabaseData(db: Database) {
 				process.env.APP_DATA_STATIONS_URLS,
 				APP_DATA_STATIONS_VALIDATION_RULES,
 				async (rowData: string[]) => {
-					await db.queryValues(
+					await db.querySafe(
 						`INSERT INTO ${process.env.APP_STATIONS_TABLE} VALUES($1, $2, $3, $4, $5, $6, $7, $8)`,
 						[
 							rowData[1],

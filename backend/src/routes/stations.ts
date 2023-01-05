@@ -3,9 +3,9 @@ import { QueryResult } from "pg";
 import { STATIONS_ENDPOINT_DIRECTION_START } from "../constants";
 import { Journey } from "../types/types";
 import { getAll, getColumnQuery, getSearch } from "./base";
-import { buildDateFilter, buildQueryParameters } from "./utils/utils";
+import { buildDateFilter, buildQueryParameters } from "./utils/queries";
 import Database from "../db/db";
-import response from "./http/response";
+import response from "./utils/response";
 
 const router = express.Router();
 
@@ -41,10 +41,10 @@ router.get("/journeys/:start", async (req, res) => {
 		const { start } = req.params;
 		const { id, all, avg } = req.query;
 
-		if (checkIncompatibleJourneysDirectionParameters(req, avg as string)) {
+		if (checkIncompatibleParameters(req, avg as string)) {
 			return response.badRequestError(
 				res,
-				"Filters not compatible with getting average - Results would not be accurate."
+				"Filters not compatible with getting average as results would not be accurate."
 			);
 		}
 
@@ -79,16 +79,13 @@ router.get("/journeys/:start", async (req, res) => {
 });
 
 /**
- * Using filters and getting the average distance of journeys are incompatible - return bad request if they are used together
+ * Using filters and getting the average distance of journeys are incompatible
  * @param avg Average query parameter
  * @param req Request
  * @param res Response
  * @returns True if filters & avg are used together
  */
-function checkIncompatibleJourneysDirectionParameters(
-	req: Request,
-	avg?: string
-) {
+function checkIncompatibleParameters(req: Request, avg?: string) {
 	const { column, order, offset, limit } = req.query;
 	return avg && column && (order || offset || limit);
 }

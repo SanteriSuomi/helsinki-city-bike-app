@@ -2,8 +2,8 @@ import express from "express";
 import { STATIONS_ENDPOINT_DIRECTION_START } from "../constants";
 import { getAll, getColumnQuery, getSearch } from "./base";
 import Database from "../db/db";
-import response from "./http/response";
-import { buildDateFilter } from "./utils/utils";
+import response from "./utils/response";
+import { buildDateFilter } from "./utils/queries";
 
 const router = express.Router();
 
@@ -31,7 +31,7 @@ router.get("/search/:query", async (req, res) => {
 });
 
 /**
- * Endpoint for getting the most return stations for a journey starting at some stations and vice versa
+ * Endpoint for getting the most popular return stations for a journey starting at some station and vice versa
  */
 router.get("/stations/:start", async (req, res) => {
 	try {
@@ -48,11 +48,11 @@ router.get("/stations/:start", async (req, res) => {
 			: "departure_station_id";
 
 		const topQueryResult = await Database.instance
-			.query(`SELECT ${queryEndString}, COUNT(*) as num_journeys_from_station
+			.query(`SELECT ${queryEndString} as station_id, COUNT(*) as num_journeys
 					FROM ${process.env.APP_JOURNEYS_TABLE}
 					WHERE ${buildDateFilter(req, false, true)} ${queryStartString} = ${id}
 					GROUP BY ${queryEndString}
-					ORDER BY num_journeys_from_station DESC
+					ORDER BY num_journeys DESC
 					LIMIT ${top};
 			`);
 		return response.successData(res, {

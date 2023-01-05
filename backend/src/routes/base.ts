@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import Database from "../db/db";
-import response from "./http/response";
+import response from "./utils/response";
 import {
 	buildDateFilter,
 	buildQueryParameters,
 	buildRouteParametersColumn,
 	buildRouteParametersSearch,
-} from "./utils/utils";
+} from "./utils/queries";
 
 /**
  * Include generic endpoint query functions such as get all, search
@@ -100,6 +100,7 @@ async function getSearch(
 		queryString = `SELECT * FROM ${table}
         ${buildRouteParametersSearch(req, stringColumns, numberColumns)}
         ${buildQueryParameters(req)}`;
+		console.log(queryString);
 	} catch (error) {
 		return response.badRequestError(res, (error as any).message);
 	}
