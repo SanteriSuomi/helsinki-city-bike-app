@@ -1,8 +1,9 @@
 import express from "express";
 import { STATIONS_ENDPOINT_DIRECTION_START } from "../constants";
-import Database from "../db/db";
 import { getAll, getColumnQuery, getSearch } from "./base";
+import Database from "../db/db";
 import response from "./http/response";
+import { buildDateFilter } from "./utils/utils";
 
 const router = express.Router();
 
@@ -49,7 +50,7 @@ router.get("/stations/:start", async (req, res) => {
 		const topQueryResult = await Database.instance
 			.query(`SELECT ${queryEndString}, COUNT(*) as num_journeys_from_station
 					FROM ${process.env.APP_JOURNEYS_TABLE}
-					WHERE ${queryStartString} = ${id}
+					WHERE ${buildDateFilter(req, false, true)} ${queryStartString} = ${id}
 					GROUP BY ${queryEndString}
 					ORDER BY num_journeys_from_station DESC
 					LIMIT ${top};

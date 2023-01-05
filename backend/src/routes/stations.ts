@@ -1,11 +1,11 @@
 import express, { Request } from "express";
 import { QueryResult } from "pg";
 import { STATIONS_ENDPOINT_DIRECTION_START } from "../constants";
-import Database from "../db/db";
 import { Journey } from "../types/types";
 import { getAll, getColumnQuery, getSearch } from "./base";
+import { buildDateFilter, buildQueryParameters } from "./utils/utils";
+import Database from "../db/db";
 import response from "./http/response";
-import { buildQueryParameters } from "./utils/utils";
 
 const router = express.Router();
 
@@ -54,7 +54,11 @@ router.get("/journeys/:start", async (req, res) => {
 		if (isDeparture) {
 			queryString = `SELECT * FROM ${
 				process.env.APP_JOURNEYS_TABLE
-			} WHERE departure_station_id = ${id} ${buildQueryParameters(req)}`;
+			} WHERE ${buildDateFilter(
+				req,
+				false,
+				true
+			)} departure_station_id = ${id} ${buildQueryParameters(req)}`;
 		}
 		queryString = `SELECT * FROM ${
 			process.env.APP_JOURNEYS_TABLE

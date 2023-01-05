@@ -24,7 +24,7 @@ function buildQueryParameters(req: Request) {
 }
 
 /**
- * Build an SQL query parameter string from request parameters
+ * Build an SQL query parameter string from request parameters. Built in date filter
  * @param req Request
  * @returns Parameters in string format ready for SQL queries
  */
@@ -46,23 +46,55 @@ function buildRouteParametersSearch(
 ) {
 	const { query } = req.params;
 	if (Number.isNaN(query)) {
-		return buildQueryStringNumber(query, numberColumns);
+		return buildRouteParametersNumber(req, query, numberColumns);
 	}
-	return buildQueryString(query, stringColumns);
+	return buildRouteParametersString(req, query, stringColumns);
 }
 
-function buildQueryStringNumber(query: string, columns: string[]) {
-	let queryString = `WHERE ${columns[0]} = ${query}`;
+function buildRouteParametersNumber(
+	req: Request,
+	query: string,
+	columns: string[]
+) {
+	let queryString = `WHERE ${buildMonthFilter(req, false, true)} ${
+		columns[0]
+	} = ${query}`;
 	for (let i = 1; i < columns.length; i++) {
 		queryString += ` OR ${columns[i]} = ${query}`;
 	}
 	return queryString;
 }
 
-function buildQueryString(query: string, columns: string[]) {
-	let queryString = `WHERE ${columns[0]} ILIKE '%${query}%'`;
+function buildRouteParametersString(
+	req: Request,
+	query: string,
+	columns: string[]
+) {
+	let queryString = `WHERE ${buildMonthFilter(req, false, true)} ${
+		columns[0]
+	} ILIKE '%${query}%'`;
 	for (let i = 1; i < columns.length; i++) {
 		queryString += ` OR ${columns[0]} ILIKE '%${query}%'`;
+	}
+	return queryString;
+}
+
+/**
+ * Injectable date filter
+ * @param req Request
+ * @param addWhere Add a 'WHERE' to the start
+ * @param addAnd Add a a 'AND' to the end
+ * @returns Month filter string
+ */
+function buildDateFilter(req: Request, addWhere: boolean, addAnd: boolean) {
+	const { dateType, dateColumn, dateNumber } = req.query;
+	let queryString = "";
+	if (dateType && dateColumn && dateNumber) {
+		queryString = `${
+			addWhere ? "WHERE " : ""
+		}EXTRACT(${dateType} FROM ${dateColumn}) = ${dateNumber} ${
+			addAnd ? "AND " : ""
+		}`;
 	}
 	return queryString;
 }
@@ -71,4 +103,5 @@ export {
 	buildQueryParameters,
 	buildRouteParametersColumn,
 	buildRouteParametersSearch,
+	buildDateFilter,
 };

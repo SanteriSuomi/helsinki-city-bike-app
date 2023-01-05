@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import Database from "../db/db";
 import response from "./http/response";
 import {
+	buildDateFilter,
 	buildQueryParameters,
 	buildRouteParametersColumn,
 	buildRouteParametersSearch,
@@ -28,7 +29,11 @@ async function getAll(
 	let queryString;
 	let countQueryString;
 	try {
-		queryString = `SELECT * FROM ${table} ${buildQueryParameters(req)}`;
+		queryString = `SELECT * FROM ${table} ${buildDateFilter(
+			req,
+			true,
+			false
+		)} ${buildQueryParameters(req)}`;
 		countQueryString = `SELECT COUNT(${column}) FROM ${table}`;
 	} catch (error) {
 		return response.badRequestError(res, (error as any).message);
