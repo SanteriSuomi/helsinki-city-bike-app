@@ -1,2 +1,2 @@
 # helsinki-city-bike
- Solita Dev Academy assignment application
+Solita Dev Academy job application assignment
