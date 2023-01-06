@@ -2,9 +2,9 @@ import { Request } from "express";
 import sanitize from "sqlstring";
 
 /**
- * Build an SQL query parameter string from query parameters supplied to the HTTP request
- * @param req Request
- * @returns Parameters in string format ready for SQL queries
+ * Builds the query parameters for a SQL SELECT statement based on the given request query parameters
+ * @param req The request object containing the query parameters: column, order, offset, and limit
+ * @returns The built query parameters as a string
  */
 function buildQueryParameters(req: Request) {
 	const { column, order, offset, limit } = req.query;
@@ -25,9 +25,9 @@ function buildQueryParameters(req: Request) {
 }
 
 /**
- * Build an SQL query parameter string from request parameters. Built in date filter
- * @param req Request
- * @returns Parameters in string format ready for SQL queries
+ * Builds the WHERE clause of a SELECT statement based on the request parameters
+ * @param req Request object containing the query parameters
+ * @returns WHERE clause as a string, including the WHERE keyword
  */
 function buildRouteParametersColumn(req: Request) {
 	const { column, query } = req.params;
@@ -35,10 +35,11 @@ function buildRouteParametersColumn(req: Request) {
 }
 
 /**
- * Build pattern-matching (substring) search SQL query parameter string
- * @param req Request
- * @param columns Columns on which the query string is matched
- * @returns Parameters in SQL format ready for SQL queries
+ * Builds a search query for a given request and columns, depending on whether the search term is a string or a number
+ * @param req Request object
+ * @param stringColumns Array of column names for which the search term should be treated as a string
+ * @param numberColumns Array of column names for which the search term should be treated as a number
+ * @returns Search query parameters in SQL format
  */
 function buildRouteParametersSearch(
 	req: Request,
@@ -68,6 +69,13 @@ function buildRouteParametersNumber(
 	return queryString;
 }
 
+/**
+ * Builds a WHERE clause for a SQL query that searches for a string in the specified columns
+ * @param req Request object
+ * @param query Search string
+ * @param columns Columns to search in
+ * @returns WHERE clause in SQL format
+ */
 function buildRouteParametersString(
 	req: Request,
 	query: string,
@@ -78,18 +86,18 @@ function buildRouteParametersString(
 	)} ${sanitizeString(columns[0])} ILIKE '%${sanitizeString(query)}%'`;
 	for (let i = 1; i < columns.length; i++) {
 		queryString += ` OR ${sanitizeString(
-			columns[0]
+			columns[i]
 		)} ILIKE '%${sanitizeString(query)}%'`;
 	}
 	return queryString;
 }
 
 /**
- * Injectable date filter
- * @param req Request
- * @param addWhere Add a 'WHERE' to the start
- * @param addAnd Add a a 'AND' to the end
- * @returns Month filter string
+ * Builds a date filter for a SQL query
+ * @param req Request object
+ * @param addWhere Whether or not to add the "WHERE" keyword to the beginning of the returned string
+ * @param addAnd Whether or not to add the "AND" keyword to the end of the returned string
+ * @returns A string in the format "WHERE/AND EXTRACT(dateType FROM dateColumn) = dateNumber AND/"
  */
 function buildDateFilter(req: Request, addWhere: boolean, addAnd: boolean) {
 	const { dateType, dateColumn, dateNumber } = req.query;

@@ -50,12 +50,4 @@ class Station extends DatabaseBaseObject {
 	}
 }
 
-type ValidationRule = {
-	index?: number;
-	isString?: boolean;
-	isNumber?: boolean;
-	isDate?: boolean;
-	customCheck?: (field: string) => boolean;
-};
-
-export { Journey, Station, ValidationRule, DatabaseBaseObject };
+export { Journey, Station, DatabaseBaseObject };

@@ -1,5 +1,5 @@
 import moment from "moment";
-import { ValidationRule } from "../types/types";
+import { ValidationRule } from "../types/validation";
 
 /**
  * Validates a row of CSV data

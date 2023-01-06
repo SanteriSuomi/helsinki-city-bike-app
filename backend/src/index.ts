@@ -5,9 +5,9 @@ import initializeData from "./data/retrieve";
 import {
 	APP_DATA_JOURNEYS_VALIDATION_RULES,
 	APP_DATA_STATIONS_VALIDATION_RULES,
-} from "./constants";
-import journeyRouter from "./routes/journeys";
-import stationsRouter from "./routes/stations";
+} from "./config/constants";
+import journeyRouter from "./routes/endpoints/journey_endpoints";
+import stationsRouter from "./routes/endpoints/station_endpoints";
 import bodyParser from "body-parser";
 
 env.config();

@@ -1,10 +1,19 @@
 import express from "express";
-import { STATIONS_ENDPOINT_DIRECTION_START } from "../constants";
-import { getAll, getColumnQuery, getSearch, postInsert } from "./base";
-import Database from "../db/database";
-import response from "./utils/response";
-import { buildDateFilter } from "./utils/queries";
-import { Journey } from "../types/types";
+import { STATIONS_ENDPOINT_DIRECTION_START } from "../../config/constants";
+import {
+	getAll,
+	getColumnQuery,
+	getSearch,
+	postInsert,
+} from "../base_endpoints";
+import {
+	sendBadRequest,
+	sendInternalError,
+	sendSuccessData,
+} from "../utils/responses";
+import { buildDateFilter } from "../utils/query_builders";
+import { Journey } from "../../types/database";
+import Database from "../../db/database";
 
 const router = express.Router();
 
@@ -55,15 +64,15 @@ router.get("/stations/:start", async (req, res) => {
 			ORDER BY num_journeys DESC
 			LIMIT ${top}`;
 	} catch (error) {
-		return response.badRequestError(res, (error as any).message);
+		return sendBadRequest(res, error);
 	}
 	try {
 		const topQueryResult = await Database.instance.query(queryString);
-		return response.successData(res, {
+		return sendSuccessData(res, {
 			topStations: topQueryResult.rows,
 		});
 	} catch (error) {
-		return response.internalError(res, (error as any).message);
+		return sendInternalError(res, error);
 	}
 });
 

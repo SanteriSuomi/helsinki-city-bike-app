@@ -1,11 +1,20 @@
 import express, { Request } from "express";
 import { QueryResult } from "pg";
-import { STATIONS_ENDPOINT_DIRECTION_START } from "../constants";
-import { Journey, Station } from "../types/types";
-import { getAll, getColumnQuery, getSearch, postInsert } from "./base";
-import { buildDateFilter, buildQueryParameters } from "./utils/queries";
-import Database from "../db/database";
-import response from "./utils/response";
+import { STATIONS_ENDPOINT_DIRECTION_START } from "../../config/constants";
+import { Journey, Station } from "../../types/database";
+import {
+	getAll,
+	getColumnQuery,
+	getSearch,
+	postInsert,
+} from "../base_endpoints";
+import { buildDateFilter, buildQueryParameters } from "../utils/query_builders";
+import {
+	sendBadRequest,
+	sendInternalError,
+	sendSuccessData,
+} from "../utils/responses";
+import Database from "../../db/database";
 
 const router = express.Router();
 
@@ -43,7 +52,7 @@ router.get("/journeys/:start", async (req, res) => {
 	let queryString;
 	try {
 		if (checkIncompatibleParameters(req, avg as string)) {
-			return response.badRequestError(
+			return sendBadRequest(
 				res,
 				"Filters not compatible with getting average as results would not be accurate."
 			);
@@ -65,11 +74,10 @@ router.get("/journeys/:start", async (req, res) => {
 			} WHERE return_station_id = ${id} ${buildQueryParameters(req)}`;
 		}
 	} catch (error) {
-		return response.badRequestError(res, (error as any).message);
+		return sendBadRequest(res, error);
 	}
 	try {
 		const queryResult = await Database.instance.query(queryString);
-
 		let returnObj: any = { totalCount: queryResult.rowCount };
 		if (avg) {
 			returnObj.averageDistance = await calcAverageDistance(queryResult);
@@ -77,9 +85,9 @@ router.get("/journeys/:start", async (req, res) => {
 		if (all) {
 			returnObj.items = queryResult.rows;
 		}
-		return response.successData(res, returnObj);
+		return sendSuccessData(res, returnObj);
 	} catch (error) {
-		return response.internalError(res, (error as any).message);
+		return sendInternalError(res, error);
 	}
 });
 
@@ -104,12 +112,11 @@ router.post("/", async (req, res) => {
 });
 
 /**
- * Using filters and getting the average distance of journeys are incompatible
- * @param avg Average query parameter
- * @param req Request
- * @param res Response
- * @returns True if filters & avg are used together
- */
+ * Check if "avg" is defined aswell as query (filter) parameters, as they are incompatible
+ * @param req Request object
+ * @param avg Average parameter
+ * @returns True if the "avg" parameter is defined and any of the other parameters are also defined, false otherwise
+ **/
 function checkIncompatibleParameters(req: Request, avg?: string) {
 	const { column, order, offset, limit } = req.query;
 	return avg && column && (order || offset || limit);

@@ -1,13 +1,21 @@
 import { Request, Response } from "express";
-import Database from "../db/database";
-import response from "./utils/response";
 import {
 	buildDateFilter,
 	buildQueryParameters,
 	buildRouteParametersColumn,
 	buildRouteParametersSearch,
-} from "./utils/queries";
-import { DatabaseBaseObject } from "../types/types";
+} from "./utils/query_builders";
+import { DatabaseBaseObject } from "../types/database";
+import {
+	HttpStatus,
+	Message,
+	sendBadRequest,
+	sendInternalError,
+	sendResponse,
+	sendSuccessData,
+	sendSuccessEmpty,
+} from "./utils/responses";
+import Database from "../db/database";
 
 /**
  * Include generic endpoint query functions such as get all, search
@@ -37,19 +45,19 @@ async function getAll(
 		)} ${buildQueryParameters(req)}`;
 		countQueryString = `SELECT COUNT(${column}) FROM ${table}`;
 	} catch (error) {
-		return response.badRequestError(res, (error as any).message);
+		return sendBadRequest(res, error);
 	}
 	try {
 		const queryResult = await Database.instance.query(queryString);
 		const countQueryResult = await Database.instance.query(
 			countQueryString
 		);
-		return response.successData(res, {
+		return sendSuccessData(res, {
 			totalCount: Number(countQueryResult.rows[0].count),
 			items: queryResult.rows,
 		});
 	} catch (error) {
-		return response.internalError(res, (error as any).message);
+		return sendInternalError(res, error);
 	}
 }
 
@@ -67,17 +75,17 @@ async function getColumnQuery(req: Request, res: Response, table: string) {
         ${buildRouteParametersColumn(req)}
         ${buildQueryParameters(req)}`;
 	} catch (error) {
-		return response.badRequestError(res, (error as any).message);
+		return sendBadRequest(res, error);
 	}
 	try {
 		const queryResult = await Database.instance.query(queryString);
 		if (queryResult.rowCount > 0) {
-			return response.successData(res, queryResult.rows);
+			return sendSuccessData(res, queryResult.rows);
 		}
 	} catch (error) {
-		return response.internalError(res, (error as any).message);
+		return sendInternalError(res, error);
 	}
-	response.successEmpty(res);
+	return sendSuccessEmpty(res);
 }
 
 /**
@@ -102,17 +110,17 @@ async function getSearch(
         ${buildRouteParametersSearch(req, stringColumns, numberColumns)}
         ${buildQueryParameters(req)}`;
 	} catch (error) {
-		return response.badRequestError(res, (error as any).message);
+		return sendBadRequest(res, (error as any).message);
 	}
 	try {
 		const queryResult = await Database.instance.query(queryString);
 		if (queryResult.rowCount > 0) {
-			return response.successData(res, queryResult.rows);
+			return sendSuccessData(res, queryResult.rows);
 		}
 	} catch (error) {
-		return response.internalError(res, (error as any).message);
+		return sendInternalError(res, (error as any).message);
 	}
-	response.successEmpty(res);
+	return sendSuccessEmpty(res);
 }
 
 /**
@@ -135,13 +143,13 @@ async function postInsert<T extends DatabaseBaseObject>(
 	try {
 		object = getObject(req.body);
 		if (!object || object.hasEmptyProperties()) {
-			return response.badRequestError(
+			return sendBadRequest(
 				res,
-				"Body is not valid - must be conform to the T object type"
+				"Body is not valid - must be conform to the T type"
 			);
 		}
 	} catch (error) {
-		return response.badRequestError(res, (error as any).message);
+		return sendBadRequest(res, error);
 	}
 	try {
 		const checkQueryResult = await Database.instance.querySafe(
@@ -149,15 +157,15 @@ async function postInsert<T extends DatabaseBaseObject>(
 			object.toArray()
 		);
 		if (checkQueryResult.rowCount > 0) {
-			return response.neutralConflict(res);
+			return sendResponse(res, HttpStatus.CONFLICT, Message.CONFLICT);
 		}
 		const queryResult = await Database.instance.querySafe(
 			queryString,
 			object.toArray()
 		);
-		return response.successCreated(res, queryResult.rows);
+		return sendSuccessData(res, queryResult.rows);
 	} catch (error) {
-		return response.internalError(res, (error as any).message);
+		return sendInternalError(res, error);
 	}
 }
 
