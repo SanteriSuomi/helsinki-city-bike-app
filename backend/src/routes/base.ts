@@ -45,7 +45,7 @@ async function getAll(
 			countQueryString
 		);
 		return response.successData(res, {
-			totalCount: countQueryResult.rows[0].count,
+			totalCount: Number(countQueryResult.rows[0].count),
 			items: queryResult.rows,
 		});
 	} catch (error) {
@@ -101,7 +101,6 @@ async function getSearch(
 		queryString = `SELECT * FROM ${table}
         ${buildRouteParametersSearch(req, stringColumns, numberColumns)}
         ${buildQueryParameters(req)}`;
-		console.log(queryString);
 	} catch (error) {
 		return response.badRequestError(res, (error as any).message);
 	}

@@ -21,7 +21,6 @@ export default async function initializeData(
 		splitUrls.map(async (url: string) => {
 			const data = await fetchData(url);
 			let firstLineParsed = false;
-
 			Papa.parse(data, {
 				skipEmptyLines: "greedy",
 				step: async (row, parser) => {

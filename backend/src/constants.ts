@@ -3,14 +3,17 @@ const JOURNEY_MIN_DURATION = 10;
 
 const APP_DATA_JOURNEYS_VALIDATION_RULES = [
 	{
+		index: 0,
 		isString: true,
 		isDate: true,
 	},
 	{
+		index: 1,
 		isString: true,
 		isDate: true,
 	},
 	{
+		index: 2,
 		isNumber: true,
 	},
 	{
@@ -41,34 +44,23 @@ const APP_DATA_JOURNEYS_VALIDATION_RULES = [
 
 const APP_DATA_STATIONS_VALIDATION_RULES = [
 	{
-		isNumber: true,
-	},
-	{
 		index: 1,
-		isString: true,
-	},
-	{
-		index: 4,
-		isString: true,
-	},
-	{
-		index: 6,
-		isString: true,
-	},
-	{
-		index: 8,
-		isString: true,
-	},
-	{
-		index: 9,
 		isNumber: true,
 	},
 	{
-		index: 10,
-		isNumber: true,
+		index: 2,
+		isString: true,
+	},
+	{
+		index: 5,
+		isString: true,
 	},
 	{
 		index: 11,
+		isNumber: true,
+	},
+	{
+		index: 12,
 		isNumber: true,
 	},
 ];
