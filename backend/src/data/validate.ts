@@ -9,19 +9,26 @@ import { ValidationRule } from "../types/validation";
  */
 export default function validate(data: string[], rules: ValidationRule[]) {
 	for (const [index, rule] of rules.entries()) {
-		const field = data[rule.index ?? index];
+		const field = data[rule.index ? rule.index : index];
 		if (!validateRule(field, rule)) return false;
 	}
 	return true;
 }
 
 function validateRule(field: string, rule: ValidationRule) {
-	return (
-		(!rule.isString || validateString(field)) &&
-		(!rule.isNumber || validateNumber(field)) &&
-		(!rule.isDate || validateDate(field)) &&
-		(!rule.customCheck || rule.customCheck(field))
-	);
+	if (rule.isString && !validateString(field)) {
+		return false;
+	}
+	if (rule.isNumber && !validateNumber(field)) {
+		return false;
+	}
+	if (rule.isDate && !validateDate(field)) {
+		return false;
+	}
+	if (rule.customCheck && !rule.customCheck(field)) {
+		return false;
+	}
+	return true;
 }
 
 function validateDate(date: string) {

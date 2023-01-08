@@ -6,12 +6,12 @@ import validate from "./validate";
  * Retrieve CSV data from a list of urls, validate them, and call a function for additional processing
  * @param urls String of urls where each url is split by a whitespace ' '
  * @param rules List of validation rules where each of the rules is applied to every row of the data
- * @param process Custom function applied to every row of validated data, e.g for storing data in the database
+ * @param onValidate Custom function applied to every row of validated data, e.g for storing data in the database
  */
 export default async function initializeData(
 	urls: string | undefined,
 	rules: ValidationRule[],
-	process: (rowData: string[]) => Promise<void>
+	onValidate: (rowData: string[]) => Promise<void>
 ) {
 	if (!urls) throw new Error("initializeData - Urls undefined");
 
@@ -19,22 +19,7 @@ export default async function initializeData(
 	await Promise.all(
 		splitUrls.map(async (url: string) => {
 			const data = await fetchData(url);
-			let firstLineParsed = false;
-			Papa.parse(data, {
-				skipEmptyLines: "greedy",
-				step: async (row, parser) => {
-					if (!firstLineParsed) {
-						firstLineParsed = true;
-						return;
-					}
-					parser.pause();
-					const rowData = row.data as string[];
-					if (validate(rowData, rules)) {
-						await process(rowData);
-					}
-					parser.resume();
-				},
-			});
+			await parseCSV(data, rules, onValidate);
 		})
 	);
 }
@@ -54,4 +39,27 @@ async function fetchData(url: string) {
 		throw new Error("Response data undefined");
 	}
 	return data;
+}
+
+async function parseCSV(
+	data: string,
+	rules: ValidationRule[],
+	onValidate: (rowData: string[]) => Promise<void>
+) {
+	return new Promise((resolve, reject) => {
+		Papa.parse(data, {
+			skipEmptyLines: "greedy",
+			header: true,
+			step: async (row, parser) => {
+				parser.pause();
+				const rowData = Object.values(row.data as any) as string[];
+				if (validate(rowData, rules)) {
+					await onValidate(rowData);
+				}
+				parser.resume();
+			},
+			complete: resolve,
+			error: reject,
+		});
+	});
 }

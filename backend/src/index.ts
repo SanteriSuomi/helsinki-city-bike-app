@@ -34,7 +34,9 @@ async function setupDatabaseData(db: Database) {
 	try {
 		const created = await db.initializeTables();
 		if (created) {
-			console.log("Initializing journeys data...");
+			console.log(
+				"Initializing journeys data (this might take several minutes)..."
+			);
 			await initializeData(
 				process.env.APP_DATA_JOURNEYS_URLS,
 				APP_DATA_JOURNEYS_VALIDATION_RULES,

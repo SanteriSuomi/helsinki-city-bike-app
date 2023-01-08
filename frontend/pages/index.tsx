@@ -1,16 +1,37 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import styles from "../styles/Home.module.css";
+import Journeys from "../components/journeys";
 
 export default function Home() {
-	async function test() {
-		const response = await fetch(
-			"http://localhost:3000/stations/search/100"
-		);
-		const result = await response.json();
-		console.log(result);
-	}
+	const [path, setPath] = useState("");
 	useEffect(() => {
-		test();
+		setPath(window.location.pathname);
 	}, []);
-	return <>test</>;
+
+	const getContentTitle = () => {
+		return path.charAt(1).toUpperCase() + path.slice(2);
+	};
+
+	const getContent = () => {
+		console.log(path);
+		if (path === "/journeys") {
+			return (
+				<>
+					<div className={styles.contentTitle}>
+						{getContentTitle()}
+					</div>
+					<Journeys></Journeys>
+				</>
+			);
+		}
+	};
+
+	return (
+		<>
+			<div className={styles.header}>
+				<div>Helsinki City Bike App</div>
+			</div>
+			<div className={styles.contentWrapper}>{getContent()}</div>
+		</>
+	);
 }
