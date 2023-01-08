@@ -1,14 +1,4 @@
-class DatabaseBaseObject {
-	hasEmptyProperties(): boolean {
-		return !Object.values(this).every(Boolean);
-	}
-
-	toArray(): any[] {
-		return Object.values(this);
-	}
-}
-
-class Journey extends DatabaseBaseObject {
+class Journey {
 	departure_date: string;
 	return_date: string;
 	departure_station_id: number;
@@ -17,7 +7,6 @@ class Journey extends DatabaseBaseObject {
 	duration: number;
 
 	constructor(journey: Journey) {
-		super();
 		this.departure_date = journey.departure_date;
 		this.return_date = journey.return_date;
 		this.departure_station_id = journey.departure_station_id;
@@ -27,7 +16,7 @@ class Journey extends DatabaseBaseObject {
 	}
 }
 
-class Station extends DatabaseBaseObject {
+class Station {
 	id: number;
 	name: string;
 	address: string;
@@ -38,7 +27,6 @@ class Station extends DatabaseBaseObject {
 	y: number;
 
 	constructor(station: Station) {
-		super();
 		this.id = station.id;
 		this.name = station.name;
 		this.address = station.address;
@@ -50,4 +38,4 @@ class Station extends DatabaseBaseObject {
 	}
 }
 
-export { DatabaseBaseObject, Journey, Station };
+export { Journey, Station };

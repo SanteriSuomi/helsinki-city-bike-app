@@ -35,7 +35,7 @@ async function setupDatabaseData(db: Database) {
 		const created = await db.initializeTables();
 		if (created) {
 			console.log(
-				"Initializing journeys data (this might take several minutes)..."
+				"Initializing journeys data (this might take around 30 minutes)..."
 			);
 			await initializeData(
 				process.env.APP_DATA_JOURNEYS_URLS,
