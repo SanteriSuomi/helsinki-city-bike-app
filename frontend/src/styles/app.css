@@ -1,0 +1,17 @@
+.app-content {
+  padding: 20px;
+}
+
+.app-header {
+  font-size: 26px;
+  margin-bottom: 20px;
+}
+
+.app-buttons {
+  display: flex;
+  flex-direction: row;
+}
+
+.app-buttons>* {
+  margin-right: 5px;
+}
