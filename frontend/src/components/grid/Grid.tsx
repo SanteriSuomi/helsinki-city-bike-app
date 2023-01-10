@@ -10,6 +10,13 @@ interface IGridProps {
 }
 
 const Grid: FunctionComponent<IGridProps> = ({ headers, data, setSort }) => {
+	const convertText = (header: Header, text: string) => {
+		if (header.isDate) {
+			return new Date(text).toLocaleDateString();
+		}
+		return text;
+	};
+
 	return (
 		<div className="grid">
 			{headers.map((header, index) => {
@@ -30,7 +37,10 @@ const Grid: FunctionComponent<IGridProps> = ({ headers, data, setSort }) => {
 							return (
 								<GridItem
 									key={dataIndex + rowIndex}
-									text={data[header.dbKey]}
+									text={convertText(
+										header,
+										data[header.dbKey]
+									)}
 									gridColumn={rowIndex + 1}
 									gridRow={dataIndex + 2}
 								></GridItem>

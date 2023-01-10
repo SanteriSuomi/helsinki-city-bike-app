@@ -40,8 +40,12 @@ export default function Journeys() {
 			{/* <JourneyGrid journeys={data?.items} setSort={setSort}></JourneyGrid> */}
 			<Grid
 				headers={[
-					{ text: "Departure Date", dbKey: "departure_date" },
-					{ text: "Return Date", dbKey: "return_date" },
+					{
+						text: "Departure Date",
+						dbKey: "departure_date",
+						isDate: true,
+					},
+					{ text: "Return Date", dbKey: "return_date", isDate: true },
 					{
 						text: "Dep. Station Name",
 						dbKey: "departure_station_name",
