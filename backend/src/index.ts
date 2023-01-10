@@ -42,12 +42,14 @@ async function setupDatabaseData(db: Database) {
 				APP_DATA_JOURNEYS_VALIDATION_RULES,
 				async (rowData: string[]) => {
 					await db.querySafe(
-						`INSERT INTO ${process.env.APP_JOURNEYS_TABLE} VALUES($1, $2, $3, $4, $5, $6)`,
+						`INSERT INTO ${process.env.APP_JOURNEYS_TABLE} VALUES($1, $2, $3, $4, $5, $6, $7, $8)`,
 						[
 							rowData[0],
 							rowData[1],
 							rowData[2],
+							rowData[3],
 							rowData[4],
+							rowData[5],
 							rowData[6],
 							rowData[7],
 						]

@@ -52,7 +52,7 @@ async function parseCSV(
 			header: true,
 			step: async (row, parser) => {
 				parser.pause();
-				const rowData = Object.values(row.data as any) as string[];
+				const rowData = Object.values<string>(row.data as any);
 				if (validate(rowData, rules)) {
 					await onValidate(rowData);
 				}

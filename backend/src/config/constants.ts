@@ -17,8 +17,16 @@ const APP_DATA_JOURNEYS_VALIDATION_RULES = [
 		isNumber: true,
 	},
 	{
+		index: 3,
+		isString: true,
+	},
+	{
 		index: 4,
 		isNumber: true,
+	},
+	{
+		index: 5,
+		isString: true,
 	},
 	{
 		index: 6,
