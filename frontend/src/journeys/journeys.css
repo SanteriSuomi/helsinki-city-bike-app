@@ -1,21 +1,3 @@
 .journeys-content {
     margin-top: 20px;
 }
-
-.journeys-grid {
-    display: grid;
-    grid-template-columns: 100fr 100fr 100fr 100fr 100fr 100fr 100fr 100fr;
-    grid-template-rows: repeat(21, 100fr);
-    height: calc(100vh - 250px);
-    padding: 10px 0 10px 0;
-}
-
-.journeys-data {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding-left: 4px;
-    padding-right: 4px;
-    border: 1px solid grey;
-}

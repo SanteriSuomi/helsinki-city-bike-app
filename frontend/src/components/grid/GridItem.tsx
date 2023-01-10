@@ -1,5 +1,5 @@
 import { FunctionComponent } from "react";
-import "./journeys.css";
+import "./griditem.css";
 
 interface IGridDataProps {
 	text: string | number;
@@ -8,7 +8,7 @@ interface IGridDataProps {
 	setSort?: (obj: any) => void;
 }
 
-const GridData: FunctionComponent<IGridDataProps> = ({
+const GridItem: FunctionComponent<IGridDataProps> = ({
 	text,
 	gridColumn,
 	gridRow,
@@ -16,7 +16,7 @@ const GridData: FunctionComponent<IGridDataProps> = ({
 }) => {
 	return (
 		<div
-			className="journeys-data"
+			className="grid-item"
 			style={{ gridColumn: gridColumn, gridRow: gridRow }}
 			onClick={() => {
 				if (setSort) {
@@ -29,4 +29,4 @@ const GridData: FunctionComponent<IGridDataProps> = ({
 	);
 };
 
-export default GridData;
+export default GridItem;

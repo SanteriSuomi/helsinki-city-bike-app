@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Journey } from "../../types/database";
-import JourneyGrid from "./JourneyGrid";
+import Grid from "../components/grid/Grid";
 import "./journeys.css";
 
 export default function Journeys() {
@@ -37,7 +37,25 @@ export default function Journeys() {
 				<input type="text" id="username" name="username"></input>
 			</div>
 
-			<JourneyGrid journeys={data?.items} setSort={setSort}></JourneyGrid>
+			{/* <JourneyGrid journeys={data?.items} setSort={setSort}></JourneyGrid> */}
+			<Grid
+				headers={[
+					{ text: "Departure Date", dbKey: "departure_date" },
+					{ text: "Return Date", dbKey: "return_date" },
+					{
+						text: "Dep. Station Name",
+						dbKey: "departure_station_name",
+					},
+					{ text: "Dep. Station ID", dbKey: "departure_station_id" },
+					{ text: "Ret. Station Name", dbKey: "return_station_name" },
+					{ text: "Ret. Station ID", dbKey: "return_station_id" },
+					{ text: "Distance", dbKey: "covered_distance" },
+					{ text: "Duration", dbKey: "duration" },
+				]}
+				data={data?.items}
+				setSort={setSort}
+			></Grid>
+
 			<div>
 				Page {1} out of {data && (data.totalCount / 20).toFixed(0)} (
 				{data?.totalCount?.toFixed(0)} journeys in total)

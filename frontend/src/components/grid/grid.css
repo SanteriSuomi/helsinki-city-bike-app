@@ -1,0 +1,7 @@
+.grid {
+    display: grid;
+    grid-template-columns: 100fr 100fr 100fr 100fr 100fr 100fr 100fr 100fr;
+    grid-template-rows: repeat(21, 100fr);
+    height: calc(100vh - 250px);
+    padding: 10px 0 10px 0;
+}
