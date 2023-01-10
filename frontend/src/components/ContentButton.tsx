@@ -1,6 +1,5 @@
 import { FunctionComponent } from "react";
 import { Link } from "react-router-dom";
-import "../styles/contentbutton.css";
 
 interface IContentButtonProps {
 	text: string;
@@ -12,7 +11,7 @@ const ContentButton: FunctionComponent<IContentButtonProps> = ({
 	to,
 }) => {
 	return (
-		<div className="content-button-content">
+		<div>
 			<Link to={to}>
 				<button>{text}</button>
 			</Link>

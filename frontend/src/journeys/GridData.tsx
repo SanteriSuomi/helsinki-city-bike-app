@@ -1,20 +1,20 @@
 import { FunctionComponent } from "react";
-import "../styles/journey.css";
+import "./journeys.css";
 
-interface IJourneyDataProps {
+interface IGridDataProps {
 	text: string | number;
 	gridRow: number;
 	gridColumn: number;
 }
 
-const JourneyData: FunctionComponent<IJourneyDataProps> = ({
+const GridData: FunctionComponent<IGridDataProps> = ({
 	text,
 	gridColumn,
 	gridRow,
 }) => {
 	return (
 		<div
-			className="journey-data"
+			className="journeys-data"
 			style={{ gridColumn: gridColumn, gridRow: gridRow }}
 		>
 			{text}
@@ -22,4 +22,4 @@ const JourneyData: FunctionComponent<IJourneyDataProps> = ({
 	);
 };
 
-export default JourneyData;
+export default GridData;

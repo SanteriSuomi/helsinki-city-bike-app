@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import ContentButton from "./components/ContentButton";
-import "./styles/app.css";
+import "./app.css";
 
 export default function App() {
 	return (
