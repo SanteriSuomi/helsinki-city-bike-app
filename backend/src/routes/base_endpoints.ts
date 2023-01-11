@@ -145,7 +145,7 @@ async function postInsert<T extends DatabaseBaseObject>(
 		if (!object || object.hasEmptyProperties()) {
 			return sendBadRequest(
 				res,
-				"Body is not valid - must be conform to the T type"
+				"Body is not valid - must conform to the T type"
 			);
 		}
 	} catch (error) {

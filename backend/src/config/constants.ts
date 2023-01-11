@@ -38,13 +38,13 @@ const APP_DATA_JOURNEYS_VALIDATION_RULES = [
 	},
 	{
 		index: 6,
-		custom: (field: string) => {
+		customCheck: (field: string) => {
 			return Number(field) >= JOURNEY_MIN_DISTANCE;
 		},
 	},
 	{
 		index: 7,
-		custom: (field: string) => {
+		customCheck: (field: string) => {
 			return Number(field) >= JOURNEY_MIN_DURATION;
 		},
 	},
