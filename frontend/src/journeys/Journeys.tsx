@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Journey } from "../types/database";
 import Grid from "../components/grid/Grid";
 import "./journeys.css";
-import { JOURNEYS_GRID_HEADERS } from "../constants";
+import { JOURNEYS_GRID_HEADERS } from "../Constants";
 import Selector from "../components/Selector";
 
 export default function Journeys() {
