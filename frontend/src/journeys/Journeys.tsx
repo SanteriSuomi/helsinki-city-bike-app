@@ -18,9 +18,6 @@ export default function Journeys() {
 
 	useEffect(() => {
 		const fetchJourneys = async () => {
-			console.log(
-				`${process.env.REACT_APP_API_URL}/journeys?column=${sort.column}&order=${sort.order}&offset=0&limit=20`
-			);
 			const response = await fetch(
 				`${process.env.REACT_APP_API_URL}/journeys?column=${sort.column}&order=${sort.order}&offset=0&limit=20`
 			);
@@ -34,13 +31,31 @@ export default function Journeys() {
 
 	return (
 		<div className="journeys-content">
-			<Selector
-				title="Sort By:"
-				headers={JOURNEYS_GRID_HEADERS}
-				onChange={(event) => {
-					setSort({ column: event.target.value, order: sort.order });
-				}}
-			></Selector>
+			<div className="journeys-selectors">
+				<Selector
+					title="Sort By Column"
+					headers={JOURNEYS_GRID_HEADERS}
+					onChange={(event) => {
+						setSort({
+							column: event.target.value,
+							order: sort.order,
+						});
+					}}
+				></Selector>
+				<Selector
+					title="Sort Order"
+					headers={[
+						{ text: "Ascending", key: "asc" },
+						{ text: "Descending", key: "desc" },
+					]}
+					onChange={(event) => {
+						setSort({
+							column: sort.column,
+							order: event.target.value,
+						});
+					}}
+				></Selector>
+			</div>
 
 			<Grid
 				headers={JOURNEYS_GRID_HEADERS}

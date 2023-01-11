@@ -5,7 +5,7 @@ type Sort = {
 
 type Header = {
 	text: string;
-	dbKey: string;
+	key: string;
 	isDate?: boolean;
 };
 

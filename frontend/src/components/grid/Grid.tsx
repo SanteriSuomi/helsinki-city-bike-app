@@ -37,10 +37,7 @@ const Grid: FunctionComponent<IGridProps> = ({ headers, data, setSort }) => {
 							return (
 								<GridItem
 									key={dataIndex + rowIndex}
-									text={convertText(
-										header,
-										data[header.dbKey]
-									)}
+									text={convertText(header, data[header.key])}
 									gridColumn={rowIndex + 1}
 									gridRow={dataIndex + 2}
 								></GridItem>

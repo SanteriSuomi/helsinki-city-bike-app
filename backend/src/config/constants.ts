@@ -1,6 +1,10 @@
 const JOURNEY_MIN_DISTANCE = 10;
 const JOURNEY_MIN_DURATION = 10;
 
+// Assuming a situation (not based on anything) where 100km and 24hrs are the max distance and duration, respectively
+const JOURNEY_MAX_DISTANCE = 100000;
+const JOURNEY_MAX_DURATION = 86400;
+
 const APP_DATA_JOURNEYS_VALIDATION_RULES = [
 	{
 		index: 0,
@@ -39,13 +43,19 @@ const APP_DATA_JOURNEYS_VALIDATION_RULES = [
 	{
 		index: 6,
 		customCheck: (field: string) => {
-			return Number(field) >= JOURNEY_MIN_DISTANCE;
+			const number = Number(field);
+			return (
+				number >= JOURNEY_MIN_DISTANCE && number <= JOURNEY_MAX_DISTANCE
+			);
 		},
 	},
 	{
 		index: 7,
 		customCheck: (field: string) => {
-			return Number(field) >= JOURNEY_MIN_DURATION;
+			const number = Number(field);
+			return (
+				number >= JOURNEY_MIN_DURATION && number <= JOURNEY_MAX_DURATION
+			);
 		},
 	},
 ];

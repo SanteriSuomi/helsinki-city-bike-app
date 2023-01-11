@@ -18,7 +18,7 @@ const Selector: FunctionComponent<ISelectorProps> = ({
 			<select onChange={onChange}>
 				{headers.map((header) => {
 					return (
-						<option key={header.dbKey} value={header.dbKey}>
+						<option key={header.key} value={header.key}>
 							{header.text}
 						</option>
 					);
