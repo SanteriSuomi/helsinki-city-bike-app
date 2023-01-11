@@ -1,5 +1,5 @@
 import { Fragment, FunctionComponent } from "react";
-import { Header, Sort } from "../../../types/grid";
+import { Header, Sort } from "../../types/grid";
 import GridItem from "./GridItem";
 import "./grid.css";
 

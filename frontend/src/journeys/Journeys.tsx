@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { Journey } from "../../types/database";
+import { Journey } from "../types/database";
 import Grid from "../components/grid/Grid";
 import "./journeys.css";
+import { JOURNEYS_GRID_HEADERS } from "../constants";
 
 export default function Journeys() {
 	const [data, setData] = useState<{
@@ -15,6 +16,7 @@ export default function Journeys() {
 	});
 
 	useEffect(() => {
+		console.log(sort);
 		const fetchJourneys = async () => {
 			console.log(
 				`${process.env.REACT_APP_API_URL}/journeys?column=${sort.column}&order=${sort.order}&offset=0&limit=20`
@@ -33,29 +35,27 @@ export default function Journeys() {
 	return (
 		<div className="journeys-content">
 			<div>
-				<div>Sort Column</div>
-				<input type="text" id="username" name="username"></input>
+				<div>Sort By:</div>
+				<select
+					onChange={(event: any) => {
+						setSort({
+							column: event.target.value,
+							order: sort.order,
+						});
+					}}
+				>
+					{JOURNEYS_GRID_HEADERS.map((header) => {
+						return (
+							<option key={header.dbKey} value={header.dbKey}>
+								{header.text}
+							</option>
+						);
+					})}
+				</select>
 			</div>
 
-			{/* <JourneyGrid journeys={data?.items} setSort={setSort}></JourneyGrid> */}
 			<Grid
-				headers={[
-					{
-						text: "Departure Date",
-						dbKey: "departure_date",
-						isDate: true,
-					},
-					{ text: "Return Date", dbKey: "return_date", isDate: true },
-					{
-						text: "Dep. Station Name",
-						dbKey: "departure_station_name",
-					},
-					{ text: "Dep. Station ID", dbKey: "departure_station_id" },
-					{ text: "Ret. Station Name", dbKey: "return_station_name" },
-					{ text: "Ret. Station ID", dbKey: "return_station_id" },
-					{ text: "Distance", dbKey: "covered_distance" },
-					{ text: "Duration", dbKey: "duration" },
-				]}
+				headers={JOURNEYS_GRID_HEADERS}
 				data={data?.items}
 				setSort={setSort}
 			></Grid>
