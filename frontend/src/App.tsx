@@ -10,7 +10,7 @@ export default function App() {
 			</div>
 			<div className="app-buttons">
 				<ContentButton text="Journeys" to="/journeys"></ContentButton>
-				<ContentButton text="Stations" to="/journeys"></ContentButton>
+				<ContentButton text="Stations" to="/stations"></ContentButton>
 			</div>
 			<Outlet></Outlet>
 		</div>

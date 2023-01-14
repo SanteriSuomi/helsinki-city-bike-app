@@ -13,6 +13,8 @@ const Grid: FunctionComponent<IGridProps> = ({ headers, data, setSort }) => {
 	const convertText = (header: Header, text: string) => {
 		if (header.isDate) {
 			return new Date(text).toLocaleDateString();
+		} else if (header.isNumber) {
+			return Number.parseFloat(text).toFixed(header.isNumber.round);
 		}
 		return text;
 	};

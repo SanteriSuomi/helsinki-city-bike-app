@@ -7,6 +7,9 @@ type Header = {
 	text: string;
 	key: string;
 	isDate?: boolean;
+	isNumber?: {
+		round: number;
+	};
 };
 
 export type { Sort, Header };

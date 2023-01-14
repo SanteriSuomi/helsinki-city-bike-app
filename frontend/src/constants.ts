@@ -16,4 +16,35 @@ const JOURNEYS_GRID_HEADERS = [
 	{ text: "Duration (s)", key: "duration" },
 ];
 
-export { JOURNEYS_GRID_HEADERS };
+const STATIONS_GRID_HEADERS = [
+	{
+		text: "ID",
+		key: "id",
+	},
+	{ text: "Name", key: "name" },
+	{ text: "Address", key: "address" },
+	{ text: "City", key: "city" },
+	{ text: "Operator", key: "operator" },
+	{ text: "Capacity", key: "capacity" },
+	{
+		text: "X Coordinate",
+		key: "x",
+		isNumber: {
+			round: 3,
+		},
+	},
+	{
+		text: "Y Coordinate",
+		key: "y",
+		isNumber: {
+			round: 3,
+		},
+	},
+];
+
+const SORT_ORDER_HEADERS = [
+	{ text: "Ascending", key: "asc" },
+	{ text: "Descending", key: "desc" },
+];
+
+export { JOURNEYS_GRID_HEADERS, STATIONS_GRID_HEADERS, SORT_ORDER_HEADERS };
