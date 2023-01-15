@@ -58,10 +58,11 @@ export default function DataPage<TData>(
 
 	useEffect(() => {
 		setSort(props.defaultSortData);
+		setPaginateOffset(0);
 	}, [props.defaultSortData]);
 
 	useEffect(() => {
-		fetchData(sort, true);
+		fetchPromise = fetchData(sort, true);
 	}, [sort]);
 
 	useEffect(() => {
