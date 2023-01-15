@@ -17,5 +17,23 @@
     align-items: center;
     font-size: 30px;
     width: 100%;
-    height: 90vw;
+    height: 80vw;
+}
+
+.data-page-footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 19px;
+}
+
+.data-page-pagination-buttons>* {
+    width: 55px;
+    height: 35px;
+    font-size: 20px;
+}
+
+.data-page-pagination-buttons>:not(:first-child) {
+    margin-left: 9px;
 }

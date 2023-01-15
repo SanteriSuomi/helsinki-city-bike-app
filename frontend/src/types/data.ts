@@ -5,7 +5,7 @@ type DefaultSortData = {
 
 type DataPageInfo<TData> = {
 	totalCount: number;
-	items?: TData[];
+	items: TData[];
 };
 
 export type { DefaultSortData, DataPageInfo };
