@@ -2,13 +2,22 @@
     margin-top: 20px;
 }
 
-.data-page-selectors {
+.data-page-filters-wrap {
+    display: flex;
+    justify-content: space-between;
+}
+
+.data-page-filters {
     display: flex;
     flex-direction: row;
 }
 
-.data-page-selectors>:not(:first-child) {
+.data-page-filters>:not(:first-child) {
     margin-left: 15px;
+}
+
+.data-page-search {
+    height: 13px;
 }
 
 .data-page-loading {

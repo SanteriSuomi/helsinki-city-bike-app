@@ -53,6 +53,13 @@ function buildRouteParametersSearch(
 	return buildRouteParametersNumber(req, query, numberColumns);
 }
 
+/**
+ * Builds a WHERE clause for a SQL query that searches for a number in the specified columns
+ * @param req Request object
+ * @param query Search string
+ * @param columns Columns to search in
+ * @returns WHERE clause in SQL format
+ */
 function buildRouteParametersNumber(
 	req: Request,
 	query: string,

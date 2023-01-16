@@ -16,7 +16,7 @@ env.config();
 Database.instantiate(startApp);
 
 async function startApp(db: Database) {
-	await setupDatabaseData(db);
+	await setupDatabase(db);
 
 	const app = express();
 	app.use(bodyParser.json());
@@ -30,7 +30,7 @@ async function startApp(db: Database) {
 	});
 }
 
-async function setupDatabaseData(db: Database) {
+async function setupDatabase(db: Database) {
 	try {
 		const created = await db.initializeTables();
 		if (created) {
@@ -56,6 +56,8 @@ async function setupDatabaseData(db: Database) {
 					);
 				}
 			);
+			console.log("Creating journeys column indices...");
+			await db.query(process.env.APP_JOURNEYS_TABLE_INDEX_QUERY!);
 
 			console.log("Initializing stations data...");
 			await initializeData(
@@ -77,6 +79,8 @@ async function setupDatabaseData(db: Database) {
 					);
 				}
 			);
+			console.log("Creating stations column indices...");
+			await db.query(process.env.APP_STATIONS_TABLE_INDEX_QUERY!);
 		}
 	} catch (retrieveError) {
 		return console.error(retrieveError);

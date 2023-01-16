@@ -30,6 +30,7 @@ export default function DataPage<TData>(
 	});
 	const [sort, setSort] = useState<DefaultSortData>(props.defaultSortData);
 	const [paginateOffset, setPaginateOffset] = useState(0);
+	const [searchQuery, setSearchQuery] = useState("");
 
 	const [maxItemsPerPage] = useState(
 		Number(process.env.REACT_APP_MAX_ITEMS_PER_PAGE)
@@ -37,19 +38,24 @@ export default function DataPage<TData>(
 
 	const fetchData = async (
 		sortData: DefaultSortData,
-		loadingIcon: boolean
+		enableLoading: boolean,
+		searchQuery?: string
 	) => {
 		if (fetchPromise) return fetchPromise;
-		if (loadingIcon) {
+		if (enableLoading) {
 			setLoading(true);
 		}
 		const response = await fetch(
-			`${process.env.REACT_APP_API_URL}/${props.apiRoute}?column=${sortData.column}&order=${sortData.order}&offset=${paginateOffset}&limit=${maxItemsPerPage}`
+			`${process.env.REACT_APP_API_URL}/${props.apiRoute}${
+				searchQuery ?? ""
+			}?column=${sortData.column}&order=${
+				sortData.order
+			}&offset=${paginateOffset}&limit=${maxItemsPerPage}`
 		);
 		if (response.ok) {
 			const result = await response.json();
 			setData(result.content);
-			if (loadingIcon) {
+			if (enableLoading) {
 				setLoading(false);
 			}
 		}
@@ -68,6 +74,12 @@ export default function DataPage<TData>(
 	useEffect(() => {
 		fetchPromise = fetchData(sort, false);
 	}, [paginateOffset]);
+
+	useEffect(() => {
+		if (searchQuery.length > 0) {
+			fetchPromise = fetchData(sort, false, `/search/${searchQuery}`);
+		}
+	}, [searchQuery]);
 
 	// Wrap in callbacks to prevent function from being recreated every re-render
 	const handleSortByColumn = useCallback(
@@ -103,19 +115,34 @@ export default function DataPage<TData>(
 		[data.totalCount, paginateOffset]
 	);
 
+	const handleSearch = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+		const query = event.target.value;
+		setSearchQuery(query);
+	}, []);
+
 	return (
 		<div className="data-page-content">
-			<div className="data-page-selectors">
-				<Selector
-					title="Sort By Column"
-					headers={props.sortColumnHeaders}
-					onChange={handleSortByColumn}
-				></Selector>
-				<Selector
-					title="Sort Order"
-					headers={SORT_ORDER_HEADERS}
-					onChange={handleSortOrder}
-				></Selector>
+			<div className="data-page-filters-wrap">
+				<div className="data-page-filters">
+					<Selector
+						title="Sort By Column"
+						headers={props.sortColumnHeaders}
+						onChange={handleSortByColumn}
+					></Selector>
+					<Selector
+						title="Sort Order"
+						headers={SORT_ORDER_HEADERS}
+						onChange={handleSortOrder}
+					></Selector>
+				</div>
+				<div>
+					<div>Search</div>
+					<input
+						className="data-page-search"
+						type="text"
+						onChange={handleSearch}
+					></input>
+				</div>
 			</div>
 
 			{loading ? (
@@ -130,8 +157,8 @@ export default function DataPage<TData>(
 					<div className="data-page-footer">
 						<div>
 							Page {paginateOffset / maxItemsPerPage + 1} out of{" "}
-							{(data.totalCount / maxItemsPerPage).toFixed(0)} (
-							{`${data.totalCount.toFixed(0)} ${
+							{(data.totalCount / maxItemsPerPage)?.toFixed(0)} (
+							{`${data.totalCount?.toFixed(0)} ${
 								props.apiRoute
 							} in total`}
 							)

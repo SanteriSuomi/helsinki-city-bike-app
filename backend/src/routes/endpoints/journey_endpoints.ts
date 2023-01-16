@@ -87,10 +87,12 @@ router.post("/", async (req, res) => {
 			WHERE departure_date = $1
 	    	AND return_date = $2
 	    	AND departure_station_id = $3
-	    	AND return_station_id = $4
-	    	AND covered_distance = $5
-	    	AND duration = $6;`,
-		`INSERT INTO ${process.env.APP_JOURNEYS_TABLE} VALUES($1, $2, $3, $4, $5, $6) RETURNING *`
+			AND departure_station_name = $4
+	    	AND return_station_id = $5
+			AND return_station_name = $6
+	    	AND covered_distance = $7
+	    	AND duration = $8;`,
+		`INSERT INTO ${process.env.APP_JOURNEYS_TABLE} VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`
 	);
 });
 

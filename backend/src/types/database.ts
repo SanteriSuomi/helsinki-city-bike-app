@@ -25,7 +25,7 @@ class Journey extends DatabaseBaseObject {
 		this.departure_station_id = journey.departure_station_id;
 		this.departure_station_name = journey.departure_station_name;
 		this.return_station_id = journey.return_station_id;
-		this.return_station_name = journey.departure_station_name;
+		this.return_station_name = journey.return_station_name;
 		this.covered_distance = journey.covered_distance;
 		this.duration = journey.duration;
 	}

@@ -110,15 +110,18 @@ async function getSearch(
         ${buildRouteParametersSearch(req, stringColumns, numberColumns)}
         ${buildQueryParameters(req)}`;
 	} catch (error) {
-		return sendBadRequest(res, (error as any).message);
+		return sendBadRequest(res, error);
 	}
 	try {
 		const queryResult = await Database.instance.query(queryString);
 		if (queryResult.rowCount > 0) {
-			return sendSuccessData(res, queryResult.rows);
+			return sendSuccessData(res, {
+				totalCount: queryResult.rowCount,
+				items: queryResult.rows,
+			});
 		}
 	} catch (error) {
-		return sendInternalError(res, (error as any).message);
+		return sendInternalError(res, error);
 	}
 	return sendSuccessEmpty(res);
 }
