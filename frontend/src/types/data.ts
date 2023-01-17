@@ -8,4 +8,9 @@ type DataPageInfo<TData> = {
 	items: TData[];
 };
 
-export type { DefaultSortData, DataPageInfo };
+type AbortableFetch = {
+	abort: () => void;
+	request: Promise<Response>;
+};
+
+export type { DefaultSortData, DataPageInfo, AbortableFetch };

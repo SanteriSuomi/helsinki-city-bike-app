@@ -7,9 +7,10 @@ import {
 } from "react";
 import Grid from "../components/grid/Grid";
 import Selector from "../components/Selector";
-import { SORT_ORDER_HEADERS } from "../Constants";
-import { DefaultSortData, DataPageInfo } from "../types/data";
+import { MIN_DATAPAGE_UPDATE_COUNT, SORT_ORDER_HEADERS } from "../Constants";
+import { DefaultSortData, DataPageInfo, AbortableFetch } from "../types/data";
 import { Header } from "../types/grid";
+import { abortableFetch } from "../utils/fetch";
 import "./datapage.css";
 
 interface IDataPageProps {
@@ -18,7 +19,8 @@ interface IDataPageProps {
 	sortColumnHeaders: Header[];
 }
 
-let fetchPromise: Promise<void> | null;
+let initialUpdateCount = 0;
+let fetchObject: AbortableFetch | null;
 
 export default function DataPage<TData>(
 	props: PropsWithChildren<IDataPageProps>
@@ -38,46 +40,62 @@ export default function DataPage<TData>(
 
 	const fetchData = async (
 		sortData: DefaultSortData,
-		enableLoading: boolean,
+		enableLoading?: boolean,
 		searchQuery?: string
 	) => {
-		if (fetchPromise) return fetchPromise;
-		if (enableLoading) {
-			setLoading(true);
+		if (fetchObject) {
+			fetchObject.abort();
+			fetchObject = null;
 		}
-		const response = await fetch(
-			`${process.env.REACT_APP_API_URL}/${props.apiRoute}${
-				searchQuery ?? ""
-			}?column=${sortData.column}&order=${
-				sortData.order
-			}&offset=${paginateOffset}&limit=${maxItemsPerPage}`
-		);
-		if (response.ok) {
+		if (enableLoading) setLoading(true);
+
+		let response;
+		try {
+			fetchObject = abortableFetch(
+				`${process.env.REACT_APP_API_URL}/${props.apiRoute}${
+					searchQuery ?? ""
+				}?column=${sortData.column}&order=${
+					sortData.order
+				}&offset=${paginateOffset}&limit=${maxItemsPerPage}`
+			);
+			response = await fetchObject.request;
+			fetchObject = null;
+		} catch (error) {
+			console.log(error);
+		}
+
+		if (response?.ok) {
 			const result = await response.json();
 			setData(result.content);
-			if (enableLoading) {
-				setLoading(false);
-			}
+			if (enableLoading) setLoading(false);
 		}
-		fetchPromise = null;
 	};
 
 	useEffect(() => {
+		initialUpdateCount = 0;
 		setSort(props.defaultSortData);
 		setPaginateOffset(0);
+		fetchData(sort, true);
 	}, [props.defaultSortData]);
 
 	useEffect(() => {
-		fetchPromise = fetchData(sort, true);
+		initialUpdateCount += 1;
+		if (initialUpdateCount >= MIN_DATAPAGE_UPDATE_COUNT) {
+			fetchData(sort);
+		}
 	}, [sort]);
 
 	useEffect(() => {
-		fetchPromise = fetchData(sort, false);
+		initialUpdateCount += 1;
+		if (initialUpdateCount >= MIN_DATAPAGE_UPDATE_COUNT) {
+			fetchData(sort);
+		}
 	}, [paginateOffset]);
 
 	useEffect(() => {
-		if (searchQuery.length > 0) {
-			fetchPromise = fetchData(sort, false, `/search/${searchQuery}`);
+		initialUpdateCount += 1;
+		if (initialUpdateCount >= MIN_DATAPAGE_UPDATE_COUNT) {
+			fetchData(sort, true, searchQuery ? `/search/${searchQuery}` : "");
 		}
 	}, [searchQuery]);
 
@@ -116,8 +134,7 @@ export default function DataPage<TData>(
 	);
 
 	const handleSearch = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-		const query = event.target.value;
-		setSearchQuery(query);
+		setSearchQuery(event.target.value);
 	}, []);
 
 	return (
@@ -157,7 +174,11 @@ export default function DataPage<TData>(
 					<div className="data-page-footer">
 						<div>
 							Page {paginateOffset / maxItemsPerPage + 1} out of{" "}
-							{(data.totalCount / maxItemsPerPage)?.toFixed(0)} (
+							{Math.max(
+								data.totalCount / maxItemsPerPage,
+								1
+							)?.toFixed(0)}{" "}
+							(
 							{`${data.totalCount?.toFixed(0)} ${
 								props.apiRoute
 							} in total`}
