@@ -19,6 +19,7 @@ interface IDataPageProps {
 	sortColumnHeaders: Header[];
 }
 
+// Prevent multiple state updates when component is mounted using a counter
 let initialUpdateCount = 0;
 let fetchObject: AbortableFetch | null;
 
@@ -48,18 +49,12 @@ export default function DataPage<TData>(
 			fetchObject = null;
 		}
 		if (enableLoading) setLoading(true);
-
 		let response;
 		try {
 			fetchObject = abortableFetch(
-				`${process.env.REACT_APP_API_URL}/${props.apiRoute}${
-					searchQuery &&
-					searchQuery.length > 0 &&
-					searchColumn &&
-					searchColumn.length > 0
-						? `/search/${searchColumn}/${searchQuery}`
-						: ""
-				}?column=${sortData.column}&order=${
+				`${process.env.REACT_APP_API_URL}/${
+					props.apiRoute
+				}${buildSearchQuery()}?column=${sortData.column}&order=${
 					sortData.order
 				}&offset=${paginateOffset}&limit=${maxItemsPerPage}`
 			);
@@ -76,6 +71,16 @@ export default function DataPage<TData>(
 		}
 	};
 
+	function buildSearchQuery() {
+		return searchQuery &&
+			searchQuery.length > 0 &&
+			searchColumn &&
+			searchColumn.length > 0
+			? `/search/${searchColumn}-${searchQuery}`
+			: "";
+	}
+
+	// Effects which are run when particular state is updated
 	useEffect(() => {
 		initialUpdateCount = 0;
 		setSort(props.defaultSortData);
@@ -86,14 +91,14 @@ export default function DataPage<TData>(
 	useEffect(() => {
 		initialUpdateCount += 1;
 		if (initialUpdateCount >= MIN_DATAPAGE_UPDATE_COUNT) {
-			fetchData(sort);
+			fetchData(sort, true);
 		}
 	}, [sort]);
 
 	useEffect(() => {
 		initialUpdateCount += 1;
 		if (initialUpdateCount >= MIN_DATAPAGE_UPDATE_COUNT) {
-			fetchData(sort);
+			fetchData(sort, true);
 		}
 	}, [paginateOffset]);
 
@@ -102,7 +107,7 @@ export default function DataPage<TData>(
 		if (initialUpdateCount >= MIN_DATAPAGE_UPDATE_COUNT) {
 			fetchData(sort, true);
 		}
-	}, [searchQuery]);
+	}, [searchColumn, searchQuery]);
 
 	// Wrap in callbacks to prevent function from being recreated every re-render
 	const handleSortByColumn = useCallback(
@@ -142,7 +147,7 @@ export default function DataPage<TData>(
 		(event: ChangeEvent<HTMLSelectElement>) => {
 			setSearchColumn(event.target.value);
 		},
-		[sort.order]
+		[]
 	);
 
 	const handleSearch = useCallback((event: ChangeEvent<HTMLInputElement>) => {
