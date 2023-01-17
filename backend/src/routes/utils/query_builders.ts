@@ -14,11 +14,11 @@ function buildQueryParameters(req: Request) {
 		if (order) {
 			params += order;
 		}
+		if (limit) {
+			params += ` LIMIT ${sanitizeNumber(limit)}`;
+		}
 		if (offset) {
 			params += ` OFFSET ${sanitizeNumber(offset)} `;
-		}
-		if (limit) {
-			params += `LIMIT ${sanitizeNumber(limit)}`;
 		}
 	}
 	return params;

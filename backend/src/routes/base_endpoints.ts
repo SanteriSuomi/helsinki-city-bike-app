@@ -106,7 +106,7 @@ async function getSearch(
 ) {
 	let queryString;
 	try {
-		queryString = `SELECT * FROM ${table}
+		queryString = `SELECT *, count(*) OVER() as total_count FROM ${table}
         ${buildRouteParametersSearch(req, stringColumns, numberColumns)}
         ${buildQueryParameters(req)}`;
 	} catch (error) {
@@ -116,7 +116,7 @@ async function getSearch(
 		const queryResult = await Database.instance.query(queryString);
 		if (queryResult.rowCount > 0) {
 			return sendSuccessData(res, {
-				totalCount: queryResult.rowCount,
+				totalCount: Number(queryResult.rows[0].total_count),
 				items: queryResult.rows,
 			});
 		}
