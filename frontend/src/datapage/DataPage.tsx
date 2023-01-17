@@ -32,6 +32,7 @@ export default function DataPage<TData>(
 	});
 	const [sort, setSort] = useState<DefaultSortData>(props.defaultSortData);
 	const [paginateOffset, setPaginateOffset] = useState(0);
+	const [searchColumn, setSearchColumn] = useState("*");
 	const [searchQuery, setSearchQuery] = useState("");
 
 	const [maxItemsPerPage] = useState(
@@ -40,8 +41,7 @@ export default function DataPage<TData>(
 
 	const fetchData = async (
 		sortData: DefaultSortData,
-		enableLoading?: boolean,
-		searchQuery?: string
+		enableLoading?: boolean
 	) => {
 		if (fetchObject) {
 			fetchObject.abort();
@@ -53,7 +53,12 @@ export default function DataPage<TData>(
 		try {
 			fetchObject = abortableFetch(
 				`${process.env.REACT_APP_API_URL}/${props.apiRoute}${
-					searchQuery ?? ""
+					searchQuery &&
+					searchQuery.length > 0 &&
+					searchColumn &&
+					searchColumn.length > 0
+						? `/search/${searchColumn}/${searchQuery}`
+						: ""
 				}?column=${sortData.column}&order=${
 					sortData.order
 				}&offset=${paginateOffset}&limit=${maxItemsPerPage}`
@@ -95,7 +100,7 @@ export default function DataPage<TData>(
 	useEffect(() => {
 		initialUpdateCount += 1;
 		if (initialUpdateCount >= MIN_DATAPAGE_UPDATE_COUNT) {
-			fetchData(sort, true, searchQuery ? `/search/${searchQuery}` : "");
+			fetchData(sort, true);
 		}
 	}, [searchQuery]);
 
@@ -133,6 +138,13 @@ export default function DataPage<TData>(
 		[data.totalCount, paginateOffset]
 	);
 
+	const handleSearchColumn = useCallback(
+		(event: ChangeEvent<HTMLSelectElement>) => {
+			setSearchColumn(event.target.value);
+		},
+		[sort.order]
+	);
+
 	const handleSearch = useCallback((event: ChangeEvent<HTMLInputElement>) => {
 		setSearchQuery(event.target.value);
 	}, []);
@@ -152,13 +164,23 @@ export default function DataPage<TData>(
 						onChange={handleSortOrder}
 					></Selector>
 				</div>
-				<div>
-					<div>Search</div>
-					<input
-						className="data-page-search"
-						type="text"
-						onChange={handleSearch}
-					></input>
+				<div className="data-page-filters">
+					<Selector
+						title="Search Column"
+						headers={[
+							{ text: "All", key: "*" },
+							...props.sortColumnHeaders,
+						]}
+						onChange={handleSearchColumn}
+					></Selector>
+					<div>
+						<div>Search</div>
+						<input
+							className="data-page-search"
+							type="text"
+							onChange={handleSearch}
+						></input>
+					</div>
 				</div>
 			</div>
 

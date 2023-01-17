@@ -30,7 +30,7 @@ router.get("/:column-:query", async (req, res) => {
 	await getColumnQuery(req, res, process.env.APP_JOURNEYS_TABLE!);
 });
 
-router.get("/search/:query", async (req, res) => {
+router.get("/search/:column-:query", async (req, res) => {
 	await getSearch(
 		req,
 		res,

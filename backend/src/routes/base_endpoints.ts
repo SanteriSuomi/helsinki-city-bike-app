@@ -106,9 +106,14 @@ async function getSearch(
 ) {
 	let queryString;
 	try {
+		({ stringColumns, numberColumns } = filterColumns(
+			req,
+			stringColumns,
+			numberColumns
+		));
 		queryString = `SELECT *, count(*) OVER() as total_count FROM ${table}
-        ${buildRouteParametersSearch(req, stringColumns, numberColumns)}
-        ${buildQueryParameters(req)}`;
+			${buildRouteParametersSearch(req, stringColumns, numberColumns)}
+			${buildQueryParameters(req)}`;
 	} catch (error) {
 		return sendBadRequest(res, error);
 	}
@@ -170,6 +175,30 @@ async function postInsert<T extends DatabaseBaseObject>(
 	} catch (error) {
 		return sendInternalError(res, error);
 	}
+}
+
+/**
+ *  If search request has a column filter - remove all other columns
+ * @param req Request
+ * @param stringColumns String columns (by default all columns in the table)
+ * @param numberColumns  Number columns (by default all columns in the table)
+ * @returns Filtered columns
+ */
+function filterColumns(
+	req: Request,
+	stringColumns: string[],
+	numberColumns: string[]
+) {
+	const { column } = req.params;
+	if (column !== "*") {
+		stringColumns = stringColumns.filter(
+			(col) => col.indexOf(column) !== -1
+		);
+		numberColumns = numberColumns.filter(
+			(col) => col.indexOf(column) !== -1
+		);
+	}
+	return { stringColumns, numberColumns };
 }
 
 export { getAll, getColumnQuery, getSearch, postInsert };
