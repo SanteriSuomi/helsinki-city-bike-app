@@ -47,21 +47,13 @@ router.get("/search/:column-:query", async (req, res) => {
  */
 router.get("/journeys/:start", async (req, res) => {
 	const { start } = req.params;
-	const { id, all, avg } = req.query;
-
+	const { id, avg, all } = req.query;
 	let queryString;
 	try {
-		if (checkIncompatibleParameters(req, avg as string)) {
-			return sendBadRequest(
-				res,
-				"Filters not compatible with getting average as results would not be accurate."
-			);
-		}
-
 		let isDeparture =
 			start === STATIONS_ENDPOINT_DIRECTION_START.FROM_STATION;
 		if (isDeparture) {
-			queryString = `SELECT * FROM ${
+			queryString = `SELECT *, count(*) OVER() as total_count, AVG(${avg}) OVER() as average_distance FROM ${
 				process.env.APP_JOURNEYS_TABLE
 			} WHERE ${buildDateFilter(
 				req,
@@ -69,7 +61,7 @@ router.get("/journeys/:start", async (req, res) => {
 				true
 			)} departure_station_id = ${id} ${buildQueryParameters(req)}`;
 		} else {
-			queryString = `SELECT * FROM ${
+			queryString = `SELECT *, count(*) OVER() as total_count, AVG(${avg}) OVER() as average_distance FROM ${
 				process.env.APP_JOURNEYS_TABLE
 			} WHERE return_station_id = ${id} ${buildQueryParameters(req)}`;
 		}
@@ -78,10 +70,10 @@ router.get("/journeys/:start", async (req, res) => {
 	}
 	try {
 		const queryResult = await Database.instance.query(queryString);
-		let returnObj: any = { totalCount: queryResult.rowCount };
-		if (avg) {
-			returnObj.averageDistance = await calcAverageDistance(queryResult);
-		}
+		let returnObj: any = {
+			totalCount: Number(queryResult.rows[0].total_count),
+			averageDistance: Number(queryResult.rows[0].average_distance),
+		};
 		if (all) {
 			returnObj.items = queryResult.rows;
 		}
@@ -110,25 +102,5 @@ router.post("/", async (req, res) => {
 		`INSERT INTO ${process.env.APP_STATIONS_TABLE} VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`
 	);
 });
-
-/**
- * Check if "avg" is defined aswell as query (filter) parameters, as they are incompatible
- * @param req Request object
- * @param avg Average parameter
- * @returns True if the "avg" parameter is defined and any of the other parameters are also defined, false otherwise
- **/
-function checkIncompatibleParameters(req: Request, avg?: string) {
-	const { column, order, offset, limit } = req.query;
-	return avg && column && (order || offset || limit);
-}
-
-async function calcAverageDistance(queryResult: QueryResult) {
-	let averageDistance = 0;
-	queryResult.rows.forEach((journey: Journey) => {
-		averageDistance += journey.covered_distance;
-	});
-	averageDistance /= queryResult.rowCount;
-	return averageDistance;
-}
 
 export default router;

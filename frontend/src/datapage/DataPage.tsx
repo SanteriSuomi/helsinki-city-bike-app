@@ -54,7 +54,7 @@ export default function DataPage<TData>(
 			fetchObject = abortableFetch(
 				`${process.env.REACT_APP_API_URL}/${
 					props.apiRoute
-				}${buildSearchQuery()}?column=${sortData.column}&order=${
+				}${buildFetchSearchQuery()}?column=${sortData.column}&order=${
 					sortData.order
 				}&offset=${paginateOffset}&limit=${maxItemsPerPage}`
 			);
@@ -71,7 +71,7 @@ export default function DataPage<TData>(
 		}
 	};
 
-	function buildSearchQuery() {
+	function buildFetchSearchQuery() {
 		return searchQuery &&
 			searchQuery.length > 0 &&
 			searchColumn &&
@@ -109,7 +109,7 @@ export default function DataPage<TData>(
 		}
 	}, [searchColumn, searchQuery]);
 
-	// Wrap in callbacks to prevent function from being recreated every re-render
+	// Wrap handlerds in callbacks to prevent the functions from being recreated every re-render
 	const handleSortByColumn = useCallback(
 		(event: ChangeEvent<HTMLSelectElement>) => {
 			setSort({
