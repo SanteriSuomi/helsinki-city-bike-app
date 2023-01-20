@@ -37,7 +37,7 @@ const Grid: FunctionComponent<IGridProps> = ({
 			})}
 			{items?.map((item: any, dataIndex: number) => {
 				return (
-					<Fragment key={dataIndex}>
+					<div key={dataIndex} className="grid-row">
 						{headers.map((header, rowIndex) => {
 							return (
 								<GridItem
@@ -52,7 +52,7 @@ const Grid: FunctionComponent<IGridProps> = ({
 								></GridItem>
 							);
 						})}
-					</Fragment>
+					</div>
 				);
 			})}
 		</div>

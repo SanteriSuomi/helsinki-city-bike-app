@@ -5,3 +5,12 @@
     height: calc(100vh - 250px);
     padding: 10px 0 10px 0;
 }
+
+
+.grid-row {
+    display: contents;
+}
+
+.grid-row:hover * {
+    background-color: rgb(236, 236, 236);
+}
