@@ -57,11 +57,11 @@ router.get("/stations/:start", async (req, res) => {
 		const queryEndString = isDeparture
 			? "return_station_id"
 			: "departure_station_id";
-		queryString = `SELECT ${queryEndString} as station_id, COUNT(*) as num_journeys
+		queryString = `SELECT ${queryEndString} as id, COUNT(*) as journey_count
 			FROM ${process.env.APP_JOURNEYS_TABLE}
 			WHERE ${buildDateFilter(req, false, true)} ${queryStartString} = ${id}
 			GROUP BY ${queryEndString}
-			ORDER BY num_journeys DESC
+			ORDER BY journey_count DESC
 			LIMIT ${top}`;
 	} catch (error) {
 		return sendBadRequest(res, error);

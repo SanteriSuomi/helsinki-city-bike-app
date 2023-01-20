@@ -1,3 +1,5 @@
+import { TopStation } from "./database";
+
 type DefaultSortData = {
 	column: string;
 	order: string;
@@ -13,4 +15,15 @@ type AbortableFetch = {
 	request: Promise<Response>;
 };
 
-export type { DefaultSortData, DataPageInfo, AbortableFetch };
+type StationDetailedInfo = {
+	totalCount: number;
+	averageDistance: number;
+	topStations: TopStation[];
+};
+
+export type {
+	DefaultSortData,
+	DataPageInfo,
+	AbortableFetch,
+	StationDetailedInfo,
+};

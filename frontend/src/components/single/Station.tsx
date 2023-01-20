@@ -1,61 +1,58 @@
-import { FunctionComponent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLoaderData } from "react-router-dom";
-import { AbortableFetch } from "../../types/data";
+import { StationDetailedInfo } from "../../types/data";
 import { Station as TStation } from "../../types/database";
-import { abortableFetch } from "../../utils/fetch";
+import Info from "./Info";
 import "./station.css";
 
-interface ISelectorProps {}
-
-let fetchObject: AbortableFetch | null;
-
-const Station: FunctionComponent<ISelectorProps> = () => {
+export default function Station() {
 	const station = useLoaderData() as TStation;
 
-	const [journeysFrom, setJourneysFrom] = useState([]);
-	const [journeysTo, setJourneysTo] = useState([]);
+	const [departureData, setDepartureData] = useState<StationDetailedInfo>();
+	const [returnData, setReturnData] = useState<StationDetailedInfo>();
 
 	const fetchData = async (
 		start: string,
 		setData: (resultContent: any) => void
 	) => {
-		if (fetchObject) {
-			fetchObject.abort();
-			fetchObject = null;
-		}
-		let response;
+		let journeysResponse;
+		let stationsResponse;
 		try {
-			fetchObject = abortableFetch(
-				`${process.env.REACT_APP_API_URL}/stations/journeys/${start}?id=${station.id}&avg=covered_distance&all=.&column=departure_station_id&order=asc&offset=5&limit=5`
+			journeysResponse = await fetch(
+				`${process.env.REACT_APP_API_URL}/stations/journeys/${start}?id=${station.id}&avg=covered_distance`
 			);
-			response = await fetchObject.request;
-			fetchObject = null;
+			stationsResponse = await fetch(
+				`${process.env.REACT_APP_API_URL}/journeys/stations/${start}?id=100&top=5`
+			);
 		} catch (error) {
 			console.log(error);
 		}
 
-		if (response?.ok) {
-			const result = await response.json();
-			console.log(start, result.content);
-			setData(result.content);
+		if (journeysResponse?.ok && stationsResponse?.ok) {
+			const journeysResult = await journeysResponse.json();
+			const stationsResult = await stationsResponse.json();
+			setData({
+				...journeysResult.content,
+				...stationsResult.content,
+			});
 		}
 	};
 
 	useEffect(() => {
-		fetchData("start", (resultContent: any) => {
-			setJourneysFrom(resultContent);
+		fetchData("departure", (resultContent: any) => {
+			setDepartureData(resultContent);
 		});
-		fetchData("end", (resultContent: any) => {
-			setJourneysTo(resultContent);
+		fetchData("return", (resultContent: any) => {
+			setReturnData(resultContent);
 		});
 	}, []);
 
 	return (
 		<div>
-			<div>{station.name}</div>
-			<div>{station.address}</div>
+			<div>Name {station.name}</div>
+			<div>Address {station.address}</div>
+			<Info info={departureData}></Info>
+			<Info info={returnData}></Info>
 		</div>
 	);
-};
-
-export default Station;
+}

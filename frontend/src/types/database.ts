@@ -42,4 +42,10 @@ class Station {
 	}
 }
 
+interface TopStation {
+	id: number;
+	journey_count: number;
+}
+
 export { Journey, Station };
+export type { TopStation };
