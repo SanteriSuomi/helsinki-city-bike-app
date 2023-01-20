@@ -1,2 +1,4 @@
 # helsinki-city-bike
-Solita Dev Academy job application assignment
+Solita job application assignment
+
+https://github.com/solita/dev-academy-2023-exercise
