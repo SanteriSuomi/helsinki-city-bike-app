@@ -7,7 +7,11 @@ import {
 } from "react";
 import Grid from "../components/grid/Grid";
 import Selector from "../components/Selector";
-import { MIN_DATAPAGE_UPDATE_COUNT, SORT_ORDER_HEADERS } from "../Constants";
+import {
+	MAX_ITEMS_PER_DATAPAGE,
+	MIN_DATAPAGE_UPDATE_COUNT,
+	SORT_ORDER_HEADERS,
+} from "../Constants";
 import { DefaultSortData, DataPageInfo, AbortableFetch } from "../types/data";
 import { Header } from "../types/grid";
 import { abortableFetch } from "../utils/fetch";
@@ -17,6 +21,7 @@ interface IDataPageProps {
 	defaultSortData: DefaultSortData;
 	apiRoute: string;
 	sortColumnHeaders: Header[];
+	onItemClickNavigationData?: { path: string; keys: string[] };
 }
 
 // Prevent multiple state updates when component is mounted using a counter
@@ -36,10 +41,6 @@ export default function DataPage<TData>(
 	const [searchColumn, setSearchColumn] = useState("*");
 	const [searchQuery, setSearchQuery] = useState("");
 
-	const [maxItemsPerPage] = useState(
-		Number(process.env.REACT_APP_MAX_ITEMS_PER_PAGE)
-	);
-
 	const fetchData = async (
 		sortData: DefaultSortData,
 		enableLoading?: boolean
@@ -56,7 +57,7 @@ export default function DataPage<TData>(
 					props.apiRoute
 				}${buildFetchSearchQuery()}?column=${sortData.column}&order=${
 					sortData.order
-				}&offset=${paginateOffset}&limit=${maxItemsPerPage}`
+				}&offset=${paginateOffset}&limit=${MAX_ITEMS_PER_DATAPAGE}`
 			);
 			response = await fetchObject.request;
 			fetchObject = null;
@@ -195,14 +196,17 @@ export default function DataPage<TData>(
 				<>
 					<Grid
 						headers={props.sortColumnHeaders}
-						data={data?.items}
-						setSort={setSort}
+						items={data?.items}
+						onItemClickNavigationData={
+							props.onItemClickNavigationData
+						}
 					></Grid>
 					<div className="data-page-footer">
 						<div>
-							Page {paginateOffset / maxItemsPerPage + 1} out of{" "}
+							Page {paginateOffset / MAX_ITEMS_PER_DATAPAGE + 1}{" "}
+							out of{" "}
 							{Math.max(
-								data.totalCount / maxItemsPerPage,
+								data.totalCount / MAX_ITEMS_PER_DATAPAGE,
 								1
 							)?.toFixed(0)}{" "}
 							(
@@ -213,13 +217,13 @@ export default function DataPage<TData>(
 						</div>
 						<div className="data-page-pagination-buttons">
 							<button
-								value={-maxItemsPerPage}
+								value={-MAX_ITEMS_PER_DATAPAGE}
 								onClick={handlePagination}
 							>
 								⇐
 							</button>
 							<button
-								value={maxItemsPerPage}
+								value={MAX_ITEMS_PER_DATAPAGE}
 								onClick={handlePagination}
 							>
 								⇒

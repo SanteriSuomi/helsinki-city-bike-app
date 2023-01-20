@@ -1,11 +1,20 @@
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+	createBrowserRouter,
+	Link,
+	Navigate,
+	RouterProvider,
+} from "react-router-dom";
 import ErrorPage from "./errors/ErrorPage";
 import DataPage from "./datapage/DataPage";
 import { JOURNEYS_GRID_HEADERS, STATIONS_GRID_HEADERS } from "./Constants";
-import { Journey, Station } from "./types/database";
+import { Journey, Station as TStation } from "./types/database";
+import Station from "./components/single/Station";
 import "./index.css";
+import { abortableFetch } from "./utils/fetch";
+
+let singleStation: TStation | null;
 
 const router = createBrowserRouter([
 	{
@@ -34,7 +43,7 @@ const router = createBrowserRouter([
 				element: (
 					<DataPage<{
 						totalCount: number;
-						items: Station[];
+						items: TStation[];
 					}>
 						defaultSortData={{
 							column: "id",
@@ -42,8 +51,33 @@ const router = createBrowserRouter([
 						}}
 						apiRoute="stations"
 						sortColumnHeaders={STATIONS_GRID_HEADERS}
+						onItemClickNavigationData={{
+							path: "/station",
+							keys: ["id"],
+						}}
 					></DataPage>
 				),
+			},
+			{
+				path: "/station/:id",
+				element: <Station></Station>,
+				loader: async ({ params }) => {
+					let response;
+					try {
+						const fetchObject = abortableFetch(
+							`${process.env.REACT_APP_API_URL}/stations/id-${params.id}`
+						);
+						response = await fetchObject.request;
+					} catch (error) {
+						console.log(error);
+					}
+
+					if (response?.ok) {
+						const result = await response.json();
+						return result.content[0];
+					}
+					return null;
+				},
 			},
 		],
 	},

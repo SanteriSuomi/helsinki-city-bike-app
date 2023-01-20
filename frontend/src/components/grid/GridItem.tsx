@@ -1,26 +1,38 @@
 import { FunctionComponent } from "react";
+import { useNavigate } from "react-router-dom";
 import "./griditem.css";
 
 interface IGridDataProps {
 	text: string | number;
-	gridRow: number;
 	gridColumn: number;
-	setSort?: (obj: any) => void;
+	gridRow: number;
+	item?: any;
+	onItemClickNavigationData?: { path: string; keys: string[] };
 }
 
 const GridItem: FunctionComponent<IGridDataProps> = ({
 	text,
 	gridColumn,
 	gridRow,
-	setSort,
+	item,
+	onItemClickNavigationData,
 }) => {
+	const navigate = useNavigate();
 	return (
 		<div
 			className="grid-item"
 			style={{ gridColumn: gridColumn, gridRow: gridRow }}
 			onClick={() => {
-				if (setSort) {
-					console.log("sort");
+				if (onItemClickNavigationData) {
+					navigate(
+						`${
+							onItemClickNavigationData.path
+						}${onItemClickNavigationData.keys?.map(
+							(key: string) => {
+								return `/${item[key]}`;
+							}
+						)}`
+					);
 				}
 			}}
 		>

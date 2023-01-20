@@ -1,16 +1,20 @@
 import { Fragment, FunctionComponent } from "react";
-import { Header, Sort } from "../../types/grid";
+import { Header } from "../../types/grid";
 import GridItem from "./GridItem";
 import "./grid.css";
 
 interface IGridProps {
 	headers: Header[];
-	data?: any[];
-	setSort: (obj: Sort) => void;
+	items?: any[];
+	onItemClickNavigationData?: { path: string; keys: string[] };
 }
 
-const Grid: FunctionComponent<IGridProps> = ({ headers, data, setSort }) => {
-	const convertText = (header: Header, text: string) => {
+const Grid: FunctionComponent<IGridProps> = ({
+	headers,
+	items,
+	onItemClickNavigationData,
+}) => {
+	const parseText = (header: Header, text: string) => {
 		if (header.isDate) {
 			return new Date(text).toLocaleDateString();
 		} else if (header.isNumber) {
@@ -28,20 +32,23 @@ const Grid: FunctionComponent<IGridProps> = ({ headers, data, setSort }) => {
 						text={header.text}
 						gridColumn={index + 1}
 						gridRow={1}
-						setSort={setSort}
 					></GridItem>
 				);
 			})}
-			{data?.map((data: any, dataIndex: number) => {
+			{items?.map((item: any, dataIndex: number) => {
 				return (
 					<Fragment key={dataIndex}>
 						{headers.map((header, rowIndex) => {
 							return (
 								<GridItem
 									key={dataIndex + rowIndex}
-									text={convertText(header, data[header.key])}
+									text={parseText(header, item[header.key])}
 									gridColumn={rowIndex + 1}
 									gridRow={dataIndex + 2}
+									onItemClickNavigationData={
+										onItemClickNavigationData
+									}
+									item={item}
 								></GridItem>
 							);
 						})}
