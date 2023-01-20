@@ -1,11 +1,6 @@
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import {
-	createBrowserRouter,
-	Link,
-	Navigate,
-	RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ErrorPage from "./errors/ErrorPage";
 import DataPage from "./datapage/DataPage";
 import { JOURNEYS_GRID_HEADERS, STATIONS_GRID_HEADERS } from "./Constants";
@@ -13,8 +8,6 @@ import { Journey, Station as TStation } from "./types/database";
 import Station from "./components/single/Station";
 import "./index.css";
 import { abortableFetch } from "./utils/fetch";
-
-let singleStation: TStation | null;
 
 const router = createBrowserRouter([
 	{
