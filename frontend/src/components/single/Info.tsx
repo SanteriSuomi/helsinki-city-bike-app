@@ -4,29 +4,32 @@ import { TopStation } from "../../types/database";
 import "./info.css";
 
 interface IInfoProps {
+	startTitle: string;
+	endTitle: string;
 	info?: StationDetailedInfo;
 }
 
-const Info: FunctionComponent<IInfoProps> = ({ info }) => {
+const Info: FunctionComponent<IInfoProps> = ({
+	startTitle,
+	endTitle,
+	info,
+}) => {
 	return (
 		<div>
 			{info ? (
 				<div>
-					<div>Journeys starting from station</div>
-					<div>{`Total count ${info.totalCount}`}</div>
-					<div>{`Average distance ${info.averageDistance}`}</div>
+					<div className="station-info-title">{startTitle}</div>
+					<div>{`Total count: ${info.totalCount}`}</div>
+					<div>{`Average distance: ${info.averageDistance.toFixed(
+						0
+					)}`}</div>
 					<div>
+						<div className="station-info-title">{endTitle}</div>
 						<div>
-							Top 5 most popular return stations for journeys
-							starting from station
+							{`${info.topStations.map((station: TopStation) => {
+								return ` ${station.id}`;
+							})}`}
 						</div>
-						{info.topStations.map((station: TopStation) => {
-							return (
-								<div key={station.id}>
-									<div>{station.journey_count}</div>
-								</div>
-							);
-						})}
 					</div>
 				</div>
 			) : (

@@ -1,7 +1,6 @@
-import express, { Request } from "express";
-import { QueryResult } from "pg";
+import express from "express";
 import { STATIONS_ENDPOINT_DIRECTION_START } from "../../config/constants";
-import { Journey, Station } from "../../types/database";
+import { Station } from "../../types/database";
 import {
 	getAll,
 	getColumnQuery,
