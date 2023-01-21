@@ -59,7 +59,7 @@ export default function Station() {
 					{station.name}, {station.address}
 				</span>
 			</div>
-			{departureData && returnData ? (
+			{departureData?.totalCount && returnData?.totalCount ? (
 				<>
 					<Info
 						startTitle="Journeys starting from station"
@@ -73,28 +73,26 @@ export default function Station() {
 				ending to station"
 						info={returnData}
 					></Info>
-
-					<div style={{ height: "550px", width: "550px" }}>
-						<GoogleMap
-							bootstrapURLKeys={{
-								key: process.env
-									.REACT_APP_API_MAP_KEY as string,
-							}}
-							defaultCenter={{ lat: station.y, lng: station.x }}
-							defaultZoom={16}
-						>
-							<div
-								className="station-map-marker"
-								{...{ lat: station.y, lng: station.x }}
-							>
-								{station.name}
-							</div>
-						</GoogleMap>
-					</div>
 				</>
 			) : (
-				""
+				<div>No journeys found for this station</div>
 			)}
+			<div style={{ height: "550px", width: "550px" }}>
+				<GoogleMap
+					bootstrapURLKeys={{
+						key: process.env.REACT_APP_API_MAP_KEY as string,
+					}}
+					defaultCenter={{ lat: station.y, lng: station.x }}
+					defaultZoom={16}
+				>
+					<div
+						className="station-map-marker"
+						{...{ lat: station.y, lng: station.x }}
+					>
+						{station.name}
+					</div>
+				</GoogleMap>
+			</div>
 		</div>
 	);
 }

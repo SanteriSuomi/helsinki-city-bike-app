@@ -6,7 +6,7 @@ import "./info.css";
 interface IInfoProps {
 	startTitle: string;
 	endTitle: string;
-	info?: StationDetailedInfo;
+	info: StationDetailedInfo;
 }
 
 const Info: FunctionComponent<IInfoProps> = ({
@@ -16,25 +16,17 @@ const Info: FunctionComponent<IInfoProps> = ({
 }) => {
 	return (
 		<div>
-			{info ? (
+			<div className="station-info-title">{startTitle}</div>
+			<div>{`Total count: ${info.totalCount}`}</div>
+			<div>{`Average distance: ${info.averageDistance.toFixed(0)}`}</div>
+			<div>
+				<div className="station-info-title">{endTitle}</div>
 				<div>
-					<div className="station-info-title">{startTitle}</div>
-					<div>{`Total count: ${info.totalCount}`}</div>
-					<div>{`Average distance: ${info.averageDistance.toFixed(
-						0
-					)}`}</div>
-					<div>
-						<div className="station-info-title">{endTitle}</div>
-						<div>
-							{`${info.topStations.map((station: TopStation) => {
-								return ` ${station.id}`;
-							})}`}
-						</div>
-					</div>
+					{`${info.topStations.map((station: TopStation) => {
+						return ` ${station.id}`;
+					})}`}
 				</div>
-			) : (
-				""
-			)}
+			</div>
 		</div>
 	);
 };

@@ -87,6 +87,49 @@ const JOURNEYS_UPLOAD_COLUMNS = [
 	},
 ];
 
+const STATIONS_UPLOAD_COLUMNS = [
+	{
+		name: "ID",
+		key: "id",
+		type: UploadColumnType.NUMBER,
+	},
+	{
+		name: "Name",
+		key: "name",
+		type: UploadColumnType.STRING,
+	},
+	{
+		name: "Address",
+		key: "address",
+		type: UploadColumnType.STRING,
+	},
+	{
+		name: "City",
+		key: "city",
+		type: UploadColumnType.STRING,
+	},
+	{
+		name: "Operator",
+		key: "operator",
+		type: UploadColumnType.STRING,
+	},
+	{
+		name: "Capacity",
+		key: "capacity",
+		type: UploadColumnType.NUMBER,
+	},
+	{
+		name: "X",
+		key: "x",
+		type: UploadColumnType.NUMBER,
+	},
+	{
+		name: "Y",
+		key: "y",
+		type: UploadColumnType.NUMBER,
+	},
+];
+
 const SORT_ORDER_HEADERS = [
 	{ text: "Ascending", key: "asc" },
 	{ text: "Descending", key: "desc" },
@@ -102,6 +145,7 @@ export {
 	JOURNEYS_GRID_HEADERS,
 	STATIONS_GRID_HEADERS,
 	JOURNEYS_UPLOAD_COLUMNS,
+	STATIONS_UPLOAD_COLUMNS,
 	SORT_ORDER_HEADERS,
 	MIN_DATAPAGE_UPDATE_COUNT,
 	MAX_ITEMS_PER_DATAPAGE,

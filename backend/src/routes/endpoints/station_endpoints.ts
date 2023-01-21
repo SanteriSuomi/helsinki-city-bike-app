@@ -12,6 +12,7 @@ import {
 	sendBadRequest,
 	sendInternalError,
 	sendSuccessData,
+	sendSuccessEmpty,
 } from "../utils/responses";
 import Database from "../../db/database";
 
@@ -69,10 +70,15 @@ router.get("/journeys/:start", async (req, res) => {
 	}
 	try {
 		const queryResult = await Database.instance.query(queryString);
-		let returnObj: any = {
-			totalCount: Number(queryResult.rows[0].total_count),
-			averageDistance: Number(queryResult.rows[0].average_distance),
-		};
+		let returnObj: any;
+		if (queryResult.rowCount > 0) {
+			returnObj = {
+				totalCount: Number(queryResult.rows[0].total_count),
+				averageDistance: Number(queryResult.rows[0].average_distance),
+			};
+		} else {
+			return sendSuccessEmpty(res);
+		}
 		if (all) {
 			returnObj.items = queryResult.rows;
 		}

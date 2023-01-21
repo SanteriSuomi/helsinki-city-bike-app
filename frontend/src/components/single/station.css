@@ -16,14 +16,11 @@
 }
 
 .station-map-marker {
+    font-size: 27px;
+    color: red;
+    -webkit-text-stroke: 1px black;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
-    width: 0;
-    height: 50;
-    border-left: 25px solid transparent;
-    border-right: 25px solid transparent;
-    border-top: 40px solid red;
-    font-size: 20px;
 }

@@ -10,6 +10,7 @@ import {
 	sendBadRequest,
 	sendInternalError,
 	sendSuccessData,
+	sendSuccessEmpty,
 } from "../utils/responses";
 import { buildDateFilter } from "../utils/query_builders";
 import { Journey } from "../../types/database";
@@ -68,9 +69,12 @@ router.get("/stations/:start", async (req, res) => {
 	}
 	try {
 		const topQueryResult = await Database.instance.query(queryString);
-		return sendSuccessData(res, {
-			topStations: topQueryResult.rows,
-		});
+		if (topQueryResult.rowCount > 0) {
+			return sendSuccessData(res, {
+				topStations: topQueryResult.rows,
+			});
+		}
+		return sendSuccessEmpty(res);
 	} catch (error) {
 		return sendInternalError(res, error);
 	}

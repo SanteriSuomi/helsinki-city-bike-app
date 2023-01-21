@@ -7,13 +7,13 @@ import {
 	JOURNEYS_GRID_HEADERS,
 	JOURNEYS_UPLOAD_COLUMNS,
 	STATIONS_GRID_HEADERS,
+	STATIONS_UPLOAD_COLUMNS,
 } from "./Constants";
 import { Journey, Station as TStation } from "./types/database";
 import Station from "./components/single/Station";
 import { abortableFetch } from "./utils/fetch";
 import "./index.css";
 import Upload from "./components/upload/Upload";
-import { UploadColumnType } from "./types/data";
 
 const router = createBrowserRouter([
 	{
@@ -91,10 +91,15 @@ const router = createBrowserRouter([
 							></Upload>
 						),
 					},
-					// {
-					// 	path: "station",
-					// 	element: <Upload></Upload>,
-					// },
+					{
+						path: "station",
+						element: (
+							<Upload
+								columns={STATIONS_UPLOAD_COLUMNS}
+								path="stations"
+							></Upload>
+						),
+					},
 				],
 			},
 		],
