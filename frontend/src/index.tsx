@@ -8,6 +8,7 @@ import { Journey, Station as TStation } from "./types/database";
 import Station from "./components/single/Station";
 import { abortableFetch } from "./utils/fetch";
 import "./index.css";
+import Upload from "./components/upload/Upload";
 
 const router = createBrowserRouter([
 	{
@@ -72,6 +73,19 @@ const router = createBrowserRouter([
 					}
 					return null;
 				},
+			},
+			{
+				path: "/upload",
+				children: [
+					{
+						path: "journey",
+						element: <Upload></Upload>,
+					},
+					{
+						path: "station",
+						element: <Upload></Upload>,
+					},
+				],
 			},
 		],
 	},

@@ -1,21 +1,29 @@
 import { FunctionComponent } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface IContentButtonProps {
-	text: string;
-	to: string;
+	text?: string;
+	to?: string;
+	onClick?: () => void;
 }
 
 const ContentButton: FunctionComponent<IContentButtonProps> = ({
 	text,
 	to,
+	onClick,
 }) => {
+	const navigate = useNavigate();
 	return (
-		<div>
-			<Link to={to}>
-				<button>{text}</button>
-			</Link>
-		</div>
+		<button
+			onClick={() => {
+				if (to) {
+					navigate(to);
+				}
+				onClick?.();
+			}}
+		>
+			{text}
+		</button>
 	);
 };
 
