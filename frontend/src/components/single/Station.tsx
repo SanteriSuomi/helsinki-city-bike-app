@@ -9,8 +9,9 @@ import "./station.css";
 export default function Station() {
 	const station = useLoaderData() as TStation;
 
-	const [departureData, setDepartureData] = useState<StationDetailedInfo>();
-	const [returnData, setReturnData] = useState<StationDetailedInfo>();
+	const [departureData, setDepartureData] =
+		useState<StationDetailedInfo | null>();
+	const [returnData, setReturnData] = useState<StationDetailedInfo | null>();
 
 	const fetchData = async (
 		start: string,
@@ -40,6 +41,8 @@ export default function Station() {
 	};
 
 	useEffect(() => {
+		setDepartureData(null);
+		setReturnData(null);
 		fetchData("departure", (resultContent: any) => {
 			setDepartureData(resultContent);
 		});
@@ -56,35 +59,42 @@ export default function Station() {
 					{station.name}, {station.address}
 				</span>
 			</div>
-			<Info
-				startTitle="Journeys starting from station"
-				endTitle="Top 5 most popular return stations for journeys
+			{departureData && returnData ? (
+				<>
+					<Info
+						startTitle="Journeys starting from station"
+						endTitle="Top 5 most popular return stations for journeys
 				starting from station"
-				info={departureData}
-			></Info>
-			<Info
-				startTitle="Journeys ending to station"
-				endTitle="Top 5 most popular starting stations for journeys
+						info={departureData}
+					></Info>
+					<Info
+						startTitle="Journeys ending to station"
+						endTitle="Top 5 most popular starting stations for journeys
 				ending to station"
-				info={returnData}
-			></Info>
+						info={returnData}
+					></Info>
 
-			<div style={{ height: "550px", width: "550px" }}>
-				<GoogleMap
-					bootstrapURLKeys={{
-						key: process.env.REACT_APP_API_MAP_KEY as string,
-					}}
-					defaultCenter={{ lat: station.y, lng: station.x }}
-					defaultZoom={19}
-				>
-					<div
-						className="station-map-marker"
-						{...{ lat: station.y, lng: station.x }}
-					>
-						{station.name}
+					<div style={{ height: "550px", width: "550px" }}>
+						<GoogleMap
+							bootstrapURLKeys={{
+								key: process.env
+									.REACT_APP_API_MAP_KEY as string,
+							}}
+							defaultCenter={{ lat: station.y, lng: station.x }}
+							defaultZoom={16}
+						>
+							<div
+								className="station-map-marker"
+								{...{ lat: station.y, lng: station.x }}
+							>
+								{station.name}
+							</div>
+						</GoogleMap>
 					</div>
-				</GoogleMap>
-			</div>
+				</>
+			) : (
+				""
+			)}
 		</div>
 	);
 }

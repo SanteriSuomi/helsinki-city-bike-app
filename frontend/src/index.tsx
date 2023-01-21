@@ -48,7 +48,7 @@ const router = createBrowserRouter([
 							path: "/station",
 							keys: ["id"],
 						}}
-						bottomText="Press row for more information"
+						bottomText="Press a row for more information"
 					></DataPage>
 				),
 			},
