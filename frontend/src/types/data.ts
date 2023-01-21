@@ -21,9 +21,24 @@ type StationDetailedInfo = {
 	topStations: TopStation[];
 };
 
+enum UploadColumnType {
+	STRING = "text",
+	NUMBER = "number",
+	DATE = "date",
+}
+
+type UploadColumn = {
+	name: string;
+	key: string;
+	type: UploadColumnType;
+};
+
+export { UploadColumnType };
+
 export type {
 	DefaultSortData,
 	DataPageInfo,
 	AbortableFetch,
 	StationDetailedInfo,
+	UploadColumn,
 };

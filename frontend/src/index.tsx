@@ -3,12 +3,17 @@ import App from "./App";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ErrorPage from "./errors/ErrorPage";
 import DataPage from "./datapage/DataPage";
-import { JOURNEYS_GRID_HEADERS, STATIONS_GRID_HEADERS } from "./Constants";
+import {
+	JOURNEYS_GRID_HEADERS,
+	JOURNEYS_UPLOAD_COLUMNS,
+	STATIONS_GRID_HEADERS,
+} from "./Constants";
 import { Journey, Station as TStation } from "./types/database";
 import Station from "./components/single/Station";
 import { abortableFetch } from "./utils/fetch";
 import "./index.css";
 import Upload from "./components/upload/Upload";
+import { UploadColumnType } from "./types/data";
 
 const router = createBrowserRouter([
 	{
@@ -79,12 +84,17 @@ const router = createBrowserRouter([
 				children: [
 					{
 						path: "journey",
-						element: <Upload></Upload>,
+						element: (
+							<Upload
+								columns={JOURNEYS_UPLOAD_COLUMNS}
+								path="journeys"
+							></Upload>
+						),
 					},
-					{
-						path: "station",
-						element: <Upload></Upload>,
-					},
+					// {
+					// 	path: "station",
+					// 	element: <Upload></Upload>,
+					// },
 				],
 			},
 		],

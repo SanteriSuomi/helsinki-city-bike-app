@@ -1,3 +1,5 @@
+import { UploadColumnType } from "./types/data";
+
 const JOURNEYS_GRID_HEADERS = [
 	{
 		text: "Departure Date",
@@ -42,6 +44,49 @@ const STATIONS_GRID_HEADERS = [
 	},
 ];
 
+const JOURNEYS_UPLOAD_COLUMNS = [
+	{
+		name: "Departure Date",
+		key: "departure_date",
+		type: UploadColumnType.DATE,
+	},
+	{
+		name: "Return Date",
+		key: "return_date",
+		type: UploadColumnType.DATE,
+	},
+	{
+		name: "Departure Station ID",
+		key: "departure_station_id",
+		type: UploadColumnType.NUMBER,
+	},
+	{
+		name: "Departure Station Name",
+		key: "departure_station_name",
+		type: UploadColumnType.STRING,
+	},
+	{
+		name: "Return Station ID",
+		key: "return_station_id",
+		type: UploadColumnType.NUMBER,
+	},
+	{
+		name: "Return Station Name",
+		key: "return_station_name",
+		type: UploadColumnType.STRING,
+	},
+	{
+		name: "Covered Distance",
+		key: "covered_distance",
+		type: UploadColumnType.NUMBER,
+	},
+	{
+		name: "Duration",
+		key: "duration",
+		type: UploadColumnType.NUMBER,
+	},
+];
+
 const SORT_ORDER_HEADERS = [
 	{ text: "Ascending", key: "asc" },
 	{ text: "Descending", key: "desc" },
@@ -56,6 +101,7 @@ const MAP_DEFAULT_ZOOM = 10;
 export {
 	JOURNEYS_GRID_HEADERS,
 	STATIONS_GRID_HEADERS,
+	JOURNEYS_UPLOAD_COLUMNS,
 	SORT_ORDER_HEADERS,
 	MIN_DATAPAGE_UPDATE_COUNT,
 	MAX_ITEMS_PER_DATAPAGE,
