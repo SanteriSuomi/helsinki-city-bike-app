@@ -1,5 +1,6 @@
 import { Request } from "express";
 import sanitize from "sqlstring";
+import { QUERY_NUMBER_EQUALITY_TOLERANCE } from "../../config/constants";
 
 /**
  * Builds the query parameters for a SQL SELECT statement based on the given request query parameters
@@ -69,9 +70,9 @@ function buildRouteParametersNumber(
 		buildDateFilter(req, false, true)
 	)} ${columns[0]} = ${sanitizeString(query)}`;
 	for (let i = 1; i < columns.length; i++) {
-		queryString += ` OR ${sanitizeString(columns[i])} = ${sanitizeString(
-			query
-		)}`;
+		queryString += ` OR ABS(${sanitizeString(
+			columns[i]
+		)} - ${sanitizeString(query)}) <= ${QUERY_NUMBER_EQUALITY_TOLERANCE}`;
 	}
 	return queryString;
 }
