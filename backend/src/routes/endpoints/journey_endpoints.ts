@@ -10,6 +10,7 @@ import {
 	sendBadRequest,
 	sendInternalError,
 	sendSuccessData,
+	sendSuccessEmpty,
 } from "../utils/responses";
 import { buildDateFilter } from "../utils/query_builders";
 import { Journey } from "../../types/database";
@@ -30,7 +31,7 @@ router.get("/:column-:query", async (req, res) => {
 	await getColumnQuery(req, res, process.env.APP_JOURNEYS_TABLE!);
 });
 
-router.get("/search/:query", async (req, res) => {
+router.get("/search/:column-:query", async (req, res) => {
 	await getSearch(
 		req,
 		res,
@@ -57,20 +58,23 @@ router.get("/stations/:start", async (req, res) => {
 		const queryEndString = isDeparture
 			? "return_station_id"
 			: "departure_station_id";
-		queryString = `SELECT ${queryEndString} as station_id, COUNT(*) as num_journeys
+		queryString = `SELECT ${queryEndString} as id, COUNT(*) as journey_count
 			FROM ${process.env.APP_JOURNEYS_TABLE}
 			WHERE ${buildDateFilter(req, false, true)} ${queryStartString} = ${id}
 			GROUP BY ${queryEndString}
-			ORDER BY num_journeys DESC
+			ORDER BY journey_count DESC
 			LIMIT ${top}`;
 	} catch (error) {
 		return sendBadRequest(res, error);
 	}
 	try {
 		const topQueryResult = await Database.instance.query(queryString);
-		return sendSuccessData(res, {
-			topStations: topQueryResult.rows,
-		});
+		if (topQueryResult.rowCount > 0) {
+			return sendSuccessData(res, {
+				topStations: topQueryResult.rows,
+			});
+		}
+		return sendSuccessEmpty(res);
 	} catch (error) {
 		return sendInternalError(res, error);
 	}
@@ -87,10 +91,12 @@ router.post("/", async (req, res) => {
 			WHERE departure_date = $1
 	    	AND return_date = $2
 	    	AND departure_station_id = $3
-	    	AND return_station_id = $4
-	    	AND covered_distance = $5
-	    	AND duration = $6;`,
-		`INSERT INTO ${process.env.APP_JOURNEYS_TABLE} VALUES($1, $2, $3, $4, $5, $6) RETURNING *`
+			AND departure_station_name = $4
+	    	AND return_station_id = $5
+			AND return_station_name = $6
+	    	AND covered_distance = $7
+	    	AND duration = $8;`,
+		`INSERT INTO ${process.env.APP_JOURNEYS_TABLE} VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`
 	);
 });
 

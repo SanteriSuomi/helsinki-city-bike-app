@@ -1,5 +1,6 @@
 import { Request } from "express";
 import sanitize from "sqlstring";
+import { QUERY_NUMBER_EQUALITY_TOLERANCE } from "../../config/constants";
 
 /**
  * Builds the query parameters for a SQL SELECT statement based on the given request query parameters
@@ -14,11 +15,11 @@ function buildQueryParameters(req: Request) {
 		if (order) {
 			params += order;
 		}
+		if (limit) {
+			params += ` LIMIT ${sanitizeNumber(limit)}`;
+		}
 		if (offset) {
 			params += ` OFFSET ${sanitizeNumber(offset)} `;
-		}
-		if (limit) {
-			params += `LIMIT ${sanitizeNumber(limit)}`;
 		}
 	}
 	return params;
@@ -53,6 +54,13 @@ function buildRouteParametersSearch(
 	return buildRouteParametersNumber(req, query, numberColumns);
 }
 
+/**
+ * Builds a WHERE clause for a SQL query that searches for a number in the specified columns
+ * @param req Request object
+ * @param query Search string
+ * @param columns Columns to search in
+ * @returns WHERE clause in SQL format
+ */
 function buildRouteParametersNumber(
 	req: Request,
 	query: string,
@@ -62,9 +70,9 @@ function buildRouteParametersNumber(
 		buildDateFilter(req, false, true)
 	)} ${columns[0]} = ${sanitizeString(query)}`;
 	for (let i = 1; i < columns.length; i++) {
-		queryString += ` OR ${sanitizeString(columns[i])} = ${sanitizeString(
-			query
-		)}`;
+		queryString += ` OR ABS(${sanitizeString(
+			columns[i]
+		)} - ${sanitizeString(query)}) <= ${QUERY_NUMBER_EQUALITY_TOLERANCE}`;
 	}
 	return queryString;
 }

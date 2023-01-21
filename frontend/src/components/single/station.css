@@ -1,0 +1,26 @@
+.station-content>* {
+    margin-top: 20px;
+}
+
+.station-name {
+    font-size: 23px;
+}
+
+.station-name-title-info {
+    font-weight: bold;
+}
+
+.station-map-wrapper {
+    width: 500px;
+    height: 500px;
+}
+
+.station-map-marker {
+    font-size: 27px;
+    color: red;
+    -webkit-text-stroke: 1px black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
