@@ -22,6 +22,7 @@ interface IDataPageProps {
 	apiRoute: string;
 	sortColumnHeaders: Header[];
 	onItemClickNavigationData?: { path: string; keys: string[] };
+	bottomText?: string;
 }
 
 // Prevent multiple state updates when component is mounted using a counter
@@ -215,6 +216,7 @@ export default function DataPage<TData>(
 							} in total`}
 							)
 						</div>
+						<div>{props.bottomText}</div>
 						<div className="data-page-pagination-buttons">
 							<button
 								value={-MAX_ITEMS_PER_DATAPAGE}

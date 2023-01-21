@@ -6,8 +6,8 @@ import DataPage from "./datapage/DataPage";
 import { JOURNEYS_GRID_HEADERS, STATIONS_GRID_HEADERS } from "./Constants";
 import { Journey, Station as TStation } from "./types/database";
 import Station from "./components/single/Station";
-import "./index.css";
 import { abortableFetch } from "./utils/fetch";
+import "./index.css";
 
 const router = createBrowserRouter([
 	{
@@ -48,6 +48,7 @@ const router = createBrowserRouter([
 							path: "/station",
 							keys: ["id"],
 						}}
+						bottomText="Press row for more information"
 					></DataPage>
 				),
 			},
