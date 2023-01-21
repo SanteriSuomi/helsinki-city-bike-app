@@ -1,4 +1,4 @@
-import { Fragment, FunctionComponent } from "react";
+import { FunctionComponent } from "react";
 import { Header } from "../../types/grid";
 import GridItem from "./GridItem";
 import "./grid.css";
