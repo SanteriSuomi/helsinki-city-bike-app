@@ -20,6 +20,9 @@ export default class Database {
 				connectionString: connectionString,
 				min: 5,
 				max: 50,
+				ssl: {
+					rejectUnauthorized: false,
+				},
 			});
 		} else {
 			this.pool = new Pool({
