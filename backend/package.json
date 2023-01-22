@@ -7,7 +7,7 @@
 		"start": "tsc && node .",
 		"dev": "conc \"tsc --watch\" \"nodemon .\" ",
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"run": "npm install && tsc && node ."
+		"build": "npm install && tsc"
 	},
 	"author": "Santeri Suomi",
 	"license": "ISC",

@@ -1,5 +1,11 @@
 import express from "express";
-import { STATIONS_ENDPOINT_DIRECTION_START } from "../../config/constants";
+import {
+	APP_JOURNEYS_TABLE,
+	APP_STATIONS_TABLE,
+	APP_STATIONS_TABLE_NUMBER_COLUMNS,
+	APP_STATIONS_TABLE_STRING_COLUMNS,
+	STATIONS_ENDPOINT_DIRECTION_START,
+} from "../../config/constants";
 import { Station } from "../../types/database";
 import {
 	getAll,
@@ -22,22 +28,22 @@ router.get("/", async (req, res) => {
 	await getAll(
 		req,
 		res,
-		process.env.APP_STATIONS_TABLE!,
-		process.env.APP_STATIONS_TABLE_STRING_COLUMNS!.split(" ")[0]
+		APP_STATIONS_TABLE,
+		APP_STATIONS_TABLE_STRING_COLUMNS.split(" ")[0]
 	);
 });
 
 router.get("/:column-:query", async (req, res) => {
-	await getColumnQuery(req, res, process.env.APP_STATIONS_TABLE!);
+	await getColumnQuery(req, res, APP_STATIONS_TABLE);
 });
 
 router.get("/search/:column-:query", async (req, res) => {
 	await getSearch(
 		req,
 		res,
-		process.env.APP_STATIONS_TABLE!,
-		process.env.APP_STATIONS_TABLE_STRING_COLUMNS!.split(" "),
-		process.env.APP_STATIONS_TABLE_NUMBER_COLUMNS!.split(" ")
+		APP_STATIONS_TABLE,
+		APP_STATIONS_TABLE_STRING_COLUMNS.split(" "),
+		APP_STATIONS_TABLE_NUMBER_COLUMNS.split(" ")
 	);
 });
 
@@ -53,17 +59,15 @@ router.get("/journeys/:start", async (req, res) => {
 		let isDeparture =
 			start === STATIONS_ENDPOINT_DIRECTION_START.FROM_STATION;
 		if (isDeparture) {
-			queryString = `SELECT *, count(*) OVER() as total_count, AVG(${avg}) OVER() as average_distance FROM ${
-				process.env.APP_JOURNEYS_TABLE
-			} WHERE ${buildDateFilter(
+			queryString = `SELECT *, count(*) OVER() as total_count, AVG(${avg}) OVER() as average_distance FROM ${APP_JOURNEYS_TABLE} WHERE ${buildDateFilter(
 				req,
 				false,
 				true
 			)} departure_station_id = ${id} ${buildQueryParameters(req)}`;
 		} else {
-			queryString = `SELECT *, count(*) OVER() as total_count, AVG(${avg}) OVER() as average_distance FROM ${
-				process.env.APP_JOURNEYS_TABLE
-			} WHERE return_station_id = ${id} ${buildQueryParameters(req)}`;
+			queryString = `SELECT *, count(*) OVER() as total_count, AVG(${avg}) OVER() as average_distance FROM ${APP_JOURNEYS_TABLE} WHERE return_station_id = ${id} ${buildQueryParameters(
+				req
+			)}`;
 		}
 	} catch (error) {
 		return sendBadRequest(res, error);
@@ -95,7 +99,7 @@ router.post("/", async (req, res) => {
 		(body: any) => {
 			return new Station(body);
 		},
-		`SELECT * FROM ${process.env.APP_STATIONS_TABLE}
+		`SELECT * FROM ${APP_STATIONS_TABLE}
 			WHERE id = $1
 	    	AND name = $2
 	    	AND address = $3
@@ -104,7 +108,7 @@ router.post("/", async (req, res) => {
 			AND capacity = $6
 	    	AND x = $7
 			AND y = $8;`,
-		`INSERT INTO ${process.env.APP_STATIONS_TABLE} VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`
+		`INSERT INTO ${APP_STATIONS_TABLE} VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`
 	);
 });
 

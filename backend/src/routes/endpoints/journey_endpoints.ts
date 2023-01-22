@@ -1,5 +1,10 @@
 import express from "express";
-import { STATIONS_ENDPOINT_DIRECTION_START } from "../../config/constants";
+import {
+	APP_JOURNEYS_TABLE,
+	APP_JOURNEYS_TABLE_NUMBER_COLUMNS,
+	APP_JOURNEYS_TABLE_STRING_COLUMNS,
+	STATIONS_ENDPOINT_DIRECTION_START,
+} from "../../config/constants";
 import {
 	getAll,
 	getColumnQuery,
@@ -22,22 +27,22 @@ router.get("/", async (req, res) => {
 	await getAll(
 		req,
 		res,
-		process.env.APP_JOURNEYS_TABLE!,
-		process.env.APP_JOURNEYS_TABLE_STRING_COLUMNS!.split(" ")[0]
+		APP_JOURNEYS_TABLE,
+		APP_JOURNEYS_TABLE_STRING_COLUMNS.split(" ")[0]
 	);
 });
 
 router.get("/:column-:query", async (req, res) => {
-	await getColumnQuery(req, res, process.env.APP_JOURNEYS_TABLE!);
+	await getColumnQuery(req, res, APP_JOURNEYS_TABLE);
 });
 
 router.get("/search/:column-:query", async (req, res) => {
 	await getSearch(
 		req,
 		res,
-		process.env.APP_JOURNEYS_TABLE!,
-		process.env.APP_JOURNEYS_TABLE_STRING_COLUMNS!.split(" "),
-		process.env.APP_JOURNEYS_TABLE_NUMBER_COLUMNS!.split(" ")
+		APP_JOURNEYS_TABLE,
+		APP_JOURNEYS_TABLE_STRING_COLUMNS.split(" "),
+		APP_JOURNEYS_TABLE_NUMBER_COLUMNS.split(" ")
 	);
 });
 
@@ -59,7 +64,7 @@ router.get("/stations/:start", async (req, res) => {
 			? "return_station_id"
 			: "departure_station_id";
 		queryString = `SELECT ${queryEndString} as id, COUNT(*) as journey_count
-			FROM ${process.env.APP_JOURNEYS_TABLE}
+			FROM ${APP_JOURNEYS_TABLE}
 			WHERE ${buildDateFilter(req, false, true)} ${queryStartString} = ${id}
 			GROUP BY ${queryEndString}
 			ORDER BY journey_count DESC
@@ -87,7 +92,7 @@ router.post("/", async (req, res) => {
 		(body: any) => {
 			return new Journey(body);
 		},
-		`SELECT * FROM ${process.env.APP_JOURNEYS_TABLE}
+		`SELECT * FROM ${APP_JOURNEYS_TABLE}
 			WHERE departure_date = $1
 	    	AND return_date = $2
 	    	AND departure_station_id = $3
@@ -96,7 +101,7 @@ router.post("/", async (req, res) => {
 			AND return_station_name = $6
 	    	AND covered_distance = $7
 	    	AND duration = $8;`,
-		`INSERT INTO ${process.env.APP_JOURNEYS_TABLE} VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`
+		`INSERT INTO ${APP_JOURNEYS_TABLE} VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`
 	);
 });
 

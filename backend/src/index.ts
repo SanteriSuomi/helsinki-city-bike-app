@@ -5,6 +5,10 @@ import initializeData from "./data/retrieve";
 import {
 	APP_DATA_JOURNEYS_VALIDATION_RULES,
 	APP_DATA_STATIONS_VALIDATION_RULES,
+	APP_JOURNEYS_TABLE,
+	APP_JOURNEYS_TABLE_INDEX_QUERY,
+	APP_STATIONS_TABLE,
+	APP_STATIONS_TABLE_INDEX_QUERY,
 } from "./config/constants";
 import journeyRouter from "./routes/endpoints/journey_endpoints";
 import stationsRouter from "./routes/endpoints/station_endpoints";
@@ -42,7 +46,7 @@ async function setupDatabase(db: Database) {
 				APP_DATA_JOURNEYS_VALIDATION_RULES,
 				async (rowData: string[]) => {
 					await db.querySafe(
-						`INSERT INTO ${process.env.APP_JOURNEYS_TABLE} VALUES($1, $2, $3, $4, $5, $6, $7, $8)`,
+						`INSERT INTO ${APP_JOURNEYS_TABLE} VALUES($1, $2, $3, $4, $5, $6, $7, $8)`,
 						[
 							rowData[0],
 							rowData[1],
@@ -57,7 +61,7 @@ async function setupDatabase(db: Database) {
 				}
 			);
 			console.log("Creating journeys column indices...");
-			await db.query(process.env.APP_JOURNEYS_TABLE_INDEX_QUERY!);
+			await db.query(APP_JOURNEYS_TABLE_INDEX_QUERY);
 
 			console.log("Initializing stations data...");
 			await initializeData(
@@ -65,7 +69,7 @@ async function setupDatabase(db: Database) {
 				APP_DATA_STATIONS_VALIDATION_RULES,
 				async (rowData: string[]) => {
 					await db.querySafe(
-						`INSERT INTO ${process.env.APP_STATIONS_TABLE} VALUES($1, $2, $3, $4, $5, $6, $7, $8)`,
+						`INSERT INTO ${APP_STATIONS_TABLE} VALUES($1, $2, $3, $4, $5, $6, $7, $8)`,
 						[
 							rowData[1],
 							rowData[2],
@@ -80,7 +84,7 @@ async function setupDatabase(db: Database) {
 				}
 			);
 			console.log("Creating stations column indices...");
-			await db.query(process.env.APP_STATIONS_TABLE_INDEX_QUERY!);
+			await db.query(APP_STATIONS_TABLE_INDEX_QUERY);
 		}
 	} catch (retrieveError) {
 		return console.error(retrieveError);

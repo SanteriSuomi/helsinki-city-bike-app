@@ -1,4 +1,10 @@
 import { Pool } from "pg";
+import {
+	APP_JOURNEYS_TABLE,
+	APP_JOURNEYS_TABLE_CREATE_QUERY,
+	APP_STATIONS_TABLE,
+	APP_STATIONS_TABLE_CREATE_QUERY,
+} from "../config/constants";
 
 /**
  * Database class where all database manipulation methods are stored
@@ -31,13 +37,13 @@ export default class Database {
 	 */
 	async initializeTables() {
 		let created = false;
-		if (!(await this.tableExists(process.env.APP_JOURNEYS_TABLE!))) {
-			await this.query(process.env.APP_JOURNEYS_TABLE_CREATE_QUERY!);
+		if (!(await this.tableExists(APP_JOURNEYS_TABLE))) {
+			await this.query(APP_JOURNEYS_TABLE_CREATE_QUERY);
 			created = true;
 			console.log("Table journeys created");
 		}
-		if (!(await this.tableExists(process.env.APP_STATIONS_TABLE!))) {
-			await this.query(process.env.APP_STATIONS_TABLE_CREATE_QUERY!);
+		if (!(await this.tableExists(APP_STATIONS_TABLE))) {
+			await this.query(APP_STATIONS_TABLE_CREATE_QUERY);
 			created = true;
 			console.log("Table stations created");
 		}
@@ -57,7 +63,7 @@ export default class Database {
 
 	async entryExists(column: string, value: string) {
 		const query = await this.querySafe(
-			`SELECT * FROM ${process.env.APP_STATIONS_TABLE} WHERE ${column} = $1`,
+			`SELECT * FROM ${APP_STATIONS_TABLE} WHERE ${column} = $1`,
 			[value]
 		);
 		return query.rowCount > 0;
