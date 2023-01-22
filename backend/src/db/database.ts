@@ -14,14 +14,23 @@ export default class Database {
 	static instance: Database;
 
 	constructor() {
-		this.pool = new Pool({
-			host: process.env.DB_HOST,
-			port: Number(process.env.DB_PORT),
-			user: process.env.DB_USER,
-			password: process.env.DB_PASS,
-			min: 5,
-			max: 50,
-		});
+		const connectionString = process.env.DB_CONNECTION_STRING;
+		if (connectionString) {
+			this.pool = new Pool({
+				connectionString: connectionString,
+				min: 5,
+				max: 50,
+			});
+		} else {
+			this.pool = new Pool({
+				host: process.env.DB_HOST,
+				port: Number(process.env.DB_PORT),
+				user: process.env.DB_USER,
+				password: process.env.DB_PASS,
+				min: 5,
+				max: 50,
+			});
+		}
 	}
 
 	static instantiate(onConnection: (db: Database) => void) {
