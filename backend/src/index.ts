@@ -12,6 +12,7 @@ import {
 } from "./config/constants";
 import journeyRouter from "./routes/endpoints/journey_endpoints";
 import stationsRouter from "./routes/endpoints/station_endpoints";
+import healthRouter from "./routes/endpoints/health_endpoint";
 import bodyParser from "body-parser";
 import cors from "cors";
 
@@ -20,13 +21,14 @@ env.config();
 Database.instantiate(startApp);
 
 async function startApp(db: Database) {
-	await setupDatabase(db);
+	setupDatabase(db);
 
 	const app = express();
 	app.use(bodyParser.json());
 	app.use(cors({ origin: process.env.APP_CORS_DOMAIN }));
 	app.use("/journeys", journeyRouter);
 	app.use("/stations", stationsRouter);
+	app.use("/health", healthRouter);
 	app.listen(process.env.APP_PORT, () => {
 		console.log(
 			`Listening to incoming connections on port ${process.env.APP_PORT}`
@@ -36,6 +38,9 @@ async function startApp(db: Database) {
 
 async function setupDatabase(db: Database) {
 	try {
+		console.log(
+			"Initializing database, usage not recommended until operation completed"
+		);
 		const created = await db.initializeTables();
 		if (created) {
 			console.log(
