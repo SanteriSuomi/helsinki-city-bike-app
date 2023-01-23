@@ -38,13 +38,10 @@ async function startApp(db: Database) {
 
 async function setupDatabase(db: Database) {
 	try {
-		console.log(
-			"Initializing database, usage not recommended until operation completed"
-		);
 		const created = await db.initializeTables();
 		if (created) {
 			console.log(
-				"Initializing journeys data (this might take up to 30 minutes)..."
+				"Initializing database, usage not recommended until operation completed \nInitializing journeys data (this might take up to 30 minutes)..."
 			);
 			await initializeData(
 				process.env.APP_DATA_JOURNEYS_URLS,
