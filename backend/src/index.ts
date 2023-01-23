@@ -12,7 +12,6 @@ import {
 } from "./config/constants";
 import journeyRouter from "./routes/endpoints/journey_endpoints";
 import stationsRouter from "./routes/endpoints/station_endpoints";
-import healthRouter from "./routes/endpoints/health_endpoint";
 import bodyParser from "body-parser";
 import cors from "cors";
 
@@ -28,7 +27,6 @@ async function startApp(db: Database) {
 	app.use(cors({ origin: process.env.APP_CORS_DOMAIN }));
 	app.use("/journeys", journeyRouter);
 	app.use("/stations", stationsRouter);
-	app.use("/health", healthRouter);
 	app.listen(process.env.APP_PORT, () => {
 		console.log(
 			`Listening to incoming connections on port ${process.env.APP_PORT}`
@@ -38,13 +36,10 @@ async function startApp(db: Database) {
 
 async function setupDatabase(db: Database) {
 	try {
-		console.log(
-			"Initializing database, usage not recommended until operation completed"
-		);
 		const created = await db.initializeTables();
 		if (created) {
 			console.log(
-				"Initializing journeys data (this might take up to 30 minutes)..."
+				"Initializing journeys data (this might take a while)..."
 			);
 			await initializeData(
 				process.env.APP_DATA_JOURNEYS_URLS,
@@ -65,7 +60,7 @@ async function setupDatabase(db: Database) {
 					);
 				}
 			);
-			console.log("Creating journeys column indices...");
+			console.log("Creating journeys index...");
 			await db.query(APP_JOURNEYS_TABLE_INDEX_QUERY);
 
 			console.log("Initializing stations data...");
@@ -88,7 +83,7 @@ async function setupDatabase(db: Database) {
 					);
 				}
 			);
-			console.log("Creating stations column indices...");
+			console.log("Creating stations index...");
 			await db.query(APP_STATIONS_TABLE_INDEX_QUERY);
 		}
 	} catch (retrieveError) {

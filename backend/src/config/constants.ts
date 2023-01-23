@@ -121,8 +121,14 @@ const APP_JOURNEYS_TABLE_CREATE_QUERY = `CREATE TABLE journeys (
 	covered_distance float NOT NULL,
 	duration float NOT NULL
 )`;
-const APP_JOURNEYS_TABLE_INDEX_QUERY = `CREATE INDEX departure_date_string_index ON journeys (TO_CHAR(departure_date, 'YYYY-MM-DD'));
-CREATE INDEX return_date_string_index ON journeys (TO_CHAR(return_date, 'YYYY-MM-DD'));
+const APP_JOURNEYS_TABLE_INDEX_QUERY = `CREATE FUNCTION to_char_immutable(timestamp without time zone, text)
+RETURNS text
+IMMUTABLE
+LANGUAGE sql
+AS $_$SELECT to_char($1, $2);$_$;
+
+CREATE INDEX departure_date_string_index ON journeys (to_char_immutable(departure_date, 'YYYY-MM-DD'));
+CREATE INDEX return_date_string_index ON journeys (to_char_immutable(return_date, 'YYYY-MM-DD'));
 CREATE INDEX departure_station_id_index ON journeys (departure_station_id);
 CREATE INDEX departure_station_name_index ON journeys (departure_station_name);
 CREATE INDEX return_station_id_index ON journeys (return_station_id);
