@@ -65,7 +65,7 @@ async function setupDatabase(db: Database) {
 					);
 				}
 			);
-			console.log("Creating journeys column indices...");
+			console.log("Creating journeys index...");
 			await db.query(APP_JOURNEYS_TABLE_INDEX_QUERY);
 
 			console.log("Initializing stations data...");
@@ -88,7 +88,7 @@ async function setupDatabase(db: Database) {
 					);
 				}
 			);
-			console.log("Creating stations column indices...");
+			console.log("Creating stations index...");
 			await db.query(APP_STATIONS_TABLE_INDEX_QUERY);
 		}
 	} catch (retrieveError) {
