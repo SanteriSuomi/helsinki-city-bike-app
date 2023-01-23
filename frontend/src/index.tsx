@@ -1,5 +1,4 @@
 import ReactDOM from "react-dom/client";
-import App from "./App";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ErrorPage from "./errors/ErrorPage";
 import DataPage from "./datapage/DataPage";
@@ -12,8 +11,9 @@ import {
 import { Journey, Station as TStation } from "./types/database";
 import Station from "./components/single/Station";
 import { abortableFetch } from "./utils/fetch";
-import "./index.css";
 import Upload from "./components/upload/Upload";
+import App from "./App";
+import "./index.css";
 
 const router = createBrowserRouter([
 	{
