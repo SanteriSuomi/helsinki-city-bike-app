@@ -13,17 +13,19 @@ export default async function initializeData(
 	rules: ValidationRule[],
 	onValidate: (rowData: string[]) => Promise<void>
 ) {
-	console.log(urls);
-
 	if (!urls) throw new Error("initializeData - Urls undefined");
 
 	const splitUrls = urls.split(" ");
-	await Promise.all(
-		splitUrls.map(async (url: string) => {
-			const data = await fetchData(url);
-			await parseCSV(data, rules, onValidate);
-		})
-	);
+	for (const url of splitUrls) {
+		const data = await fetchData(url);
+		await parseCSV(data, rules, onValidate);
+	}
+	// await Promise.all(
+	// 	splitUrls.map(async (url: string) => {
+	// 		const data = await fetchData(url);
+	// 		await parseCSV(data, rules, onValidate);
+	// 	})
+	// );
 }
 
 async function fetchData(url: string) {
