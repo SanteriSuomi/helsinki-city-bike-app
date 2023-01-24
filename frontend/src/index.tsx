@@ -1,19 +1,20 @@
 import ReactDOM from "react-dom/client";
-import App from "./App";
+import App from "./App.tsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import ErrorPage from "./errors/ErrorPage";
-import DataPage from "./datapage/DataPage";
+import ErrorPage from "./errors/ErrorPage.tsx";
+import DataPage from "./datapage/DataPage.tsx";
 import {
 	JOURNEYS_GRID_HEADERS,
 	JOURNEYS_UPLOAD_COLUMNS,
 	STATIONS_GRID_HEADERS,
 	STATIONS_UPLOAD_COLUMNS,
-} from "./Constants";
+} from "./constants.ts";
 import { Journey, Station as TStation } from "./types/database";
-import Station from "./components/single/Station";
-import { abortableFetch } from "./utils/fetch";
+import Station from "./components/single/Station.tsx";
+import { abortableFetch } from "./utils/fetch.ts";
+import Upload from "./components/upload/Upload.tsx";
+import React from "react";
 import "./index.css";
-import Upload from "./components/upload/Upload";
 
 const router = createBrowserRouter([
 	{

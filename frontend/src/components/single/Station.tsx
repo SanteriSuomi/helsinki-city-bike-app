@@ -3,7 +3,7 @@ import { useLoaderData } from "react-router-dom";
 import { StationDetailedInfo } from "../../types/data";
 import { Station as TStation } from "../../types/database";
 import GoogleMap from "google-map-react";
-import Info from "./Info";
+import Info from "./Info.tsx";
 import "./station.css";
 
 export default function Station() {

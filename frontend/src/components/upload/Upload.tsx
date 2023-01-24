@@ -1,5 +1,5 @@
 import { FunctionComponent, useState } from "react";
-import { UploadColumn, UploadColumnType } from "../../types/data";
+import { UploadColumn, UploadColumnType } from "../../types/data.ts";
 import "./upload.css";
 
 interface IUploadProps {

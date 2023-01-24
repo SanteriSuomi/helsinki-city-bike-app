@@ -13,6 +13,8 @@ export default async function initializeData(
 	rules: ValidationRule[],
 	onValidate: (rowData: string[]) => Promise<void>
 ) {
+	console.log(urls);
+
 	if (!urls) throw new Error("initializeData - Urls undefined");
 
 	const splitUrls = urls.split(" ");

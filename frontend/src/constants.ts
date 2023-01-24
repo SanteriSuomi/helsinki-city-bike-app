@@ -1,4 +1,4 @@
-import { UploadColumnType } from "./types/data";
+import { UploadColumnType } from "./types/data.ts";
 
 const JOURNEYS_GRID_HEADERS = [
 	{
