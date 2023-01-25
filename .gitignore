@@ -178,3 +178,4 @@ dist
 
 # Other
 .vscode
+tsconfig.json
