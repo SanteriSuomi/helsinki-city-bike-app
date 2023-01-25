@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import ContentButton from "./components/ContentButton";
+import ContentButton from "./components/ContentButton.tsx";
 import { useCallback, useState } from "react";
 import "./app.css";
 

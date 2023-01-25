@@ -5,16 +5,16 @@ import {
 	useEffect,
 	useState,
 } from "react";
-import Grid from "../components/grid/Grid";
-import Selector from "../components/Selector";
+import Grid from "../components/grid/Grid.tsx";
+import Selector from "../components/Selector.tsx";
 import {
 	MAX_ITEMS_PER_DATAPAGE,
 	MIN_DATAPAGE_UPDATE_COUNT,
 	SORT_ORDER_HEADERS,
-} from "../Constants";
+} from "../constants.ts";
 import { DefaultSortData, DataPageInfo, AbortableFetch } from "../types/data";
 import { Header } from "../types/grid";
-import { abortableFetch } from "../utils/fetch";
+import { abortableFetch } from "../utils/fetch.ts";
 import "./datapage.css";
 
 interface IDataPageProps {

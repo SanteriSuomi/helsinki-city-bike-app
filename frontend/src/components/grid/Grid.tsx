@@ -1,6 +1,6 @@
 import { FunctionComponent } from "react";
 import { Header } from "../../types/grid";
-import GridItem from "./GridItem";
+import GridItem from "./GridItem.tsx";
 import "./grid.css";
 
 interface IGridProps {
