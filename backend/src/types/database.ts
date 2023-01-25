@@ -1,3 +1,5 @@
+import Database from "../db/database";
+
 class DatabaseBaseObject {
 	hasEmptyProperties(): boolean {
 		return !Object.values(this).every(Boolean);

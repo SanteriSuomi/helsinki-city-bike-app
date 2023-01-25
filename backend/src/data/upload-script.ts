@@ -1,11 +1,11 @@
 import {
 	APP_DATA_JOURNEYS_VALIDATION_RULES,
 	APP_DATA_STATIONS_VALIDATION_RULES,
-	APP_JOURNEYS_TABLE,
 	APP_JOURNEYS_TABLE_INDEX_QUERY,
-	APP_STATIONS_TABLE,
 	APP_STATIONS_TABLE_INDEX_QUERY,
-} from "../config/constants";
+} from "./constants";
+import { APP_JOURNEYS_TABLE, APP_STATIONS_TABLE } from "../config/constants";
+import { DataDatabase } from "./database";
 import format from "pg-format";
 import Database from "../db/database";
 import initializeData from "./retrieve";
@@ -22,13 +22,13 @@ import env from "dotenv";
 
 env.config();
 
-Database.instantiate(setupDatabase);
+DataDatabase.connect(setupDatabase);
 
 const MIN_ROWCOUNT_JOURNEYS = 10_000;
 const MIN_ROWCOUNT_STATIONS = 100;
 let rows: string[][] = [];
 
-async function setupDatabase(db: Database) {
+async function setupDatabase(db: DataDatabase) {
 	try {
 		const created = await db.initializeTables();
 		if (created) {

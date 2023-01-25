@@ -20,12 +20,6 @@ export default async function initializeData(
 		const data = await fetchData(url);
 		await parseCSV(data, rules, onValidate);
 	}
-	// await Promise.all(
-	// 	splitUrls.map(async (url: string) => {
-	// 		const data = await fetchData(url);
-	// 		await parseCSV(data, rules, onValidate);
-	// 	})
-	// );
 }
 
 async function fetchData(url: string) {
