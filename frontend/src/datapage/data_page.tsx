@@ -1,21 +1,22 @@
-import {
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, {
 	ChangeEvent,
 	PropsWithChildren,
 	useCallback,
 	useEffect,
 	useState,
 } from "react";
-import Grid from "../components/grid/Grid.tsx";
-import Selector from "../components/Selector.tsx";
+import Grid from "../components/grid/grid";
+import Selector from "../components/selector";
 import {
 	MAX_ITEMS_PER_DATAPAGE,
 	MIN_DATAPAGE_UPDATE_COUNT,
 	SORT_ORDER_HEADERS,
-} from "../constants.ts";
+} from "../constants";
 import { DefaultSortData, DataPageInfo, AbortableFetch } from "../types/data";
 import { Header } from "../types/grid";
-import { abortableFetch } from "../utils/fetch.ts";
-import "./datapage.css";
+import { abortableFetch } from "../utils/fetch";
+import "./data_page.css";
 
 interface IDataPageProps {
 	defaultSortData: DefaultSortData;

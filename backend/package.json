@@ -1,6 +1,6 @@
 {
     "name": "helsinki-city-bike-app-backend",
-    "version": "1.0.0",
+    "version": "1.0",
     "description": "Helsinki city bike app backend",
     "main": "dist/index.js",
     "scripts": {

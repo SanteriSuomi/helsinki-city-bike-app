@@ -11,14 +11,20 @@ export class Database {
     static instance: Database;
 
     constructor() {
-        this.pool = new Pool({
-            connectionString: process.env.DB_CONNECTION_STRING,
+        const connectionString = process.argv[2];
+        console.log(connectionString)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const config: any = {
+            connectionString: connectionString,
             min: 5,
             max: 50,
-            ssl: {
+        }
+        if (connectionString?.indexOf("ssl") !== -1) {
+            config.ssl = {
                 rejectUnauthorized: false,
-            },
-        });
+            }
+        }
+        this.pool = new Pool(config);
     }
 
     static connect(onConnection: (db: Database) => void) {

@@ -10,9 +10,6 @@ import {
 import { Database } from "./database";
 import format from "pg-format";
 import initializeData from "./retrieve";
-import env from "dotenv";
-
-env.config();
 
 Database.connect(setupDatabase);
 
@@ -25,8 +22,10 @@ async function setupDatabase(db: Database) {
             console.log(
                 "Initializing journeys data (this might take a while)..."
             );
+            const APP_DATA_JOURNEYS_URLS = process.argv[3];
+            const APP_DATA_STATIONS_URLS = process.argv[4];
             await initializeData(
-                process.env.APP_DATA_JOURNEYS_URLS,
+                APP_DATA_JOURNEYS_URLS,
                 APP_DATA_JOURNEYS_VALIDATION_RULES,
                 async (rowData: string[]) => {
                     rows.push([
@@ -50,7 +49,7 @@ async function setupDatabase(db: Database) {
 
             console.log("Initializing stations data...");
             await initializeData(
-                process.env.APP_DATA_STATIONS_URLS,
+                APP_DATA_STATIONS_URLS,
                 APP_DATA_STATIONS_VALIDATION_RULES,
                 async (rowData: string[]) => {
                     rows.push([

@@ -1,6 +1,6 @@
-import { FunctionComponent } from "react";
+import React, { FunctionComponent } from "react";
 import { useNavigate } from "react-router-dom";
-import "./griditem.css";
+import "./grid_item.css";
 
 interface IGridDataProps {
 	text: string | number;
