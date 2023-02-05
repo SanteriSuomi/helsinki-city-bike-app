@@ -1,19 +1,19 @@
 import { Request, Response } from "express";
 import {
-	buildDateFilter,
-	buildQueryParameters,
-	buildRouteParametersColumn,
-	buildRouteParametersSearch,
+    buildDateFilter,
+    buildQueryParameters,
+    buildRouteParametersColumn,
+    buildRouteParametersSearch,
 } from "./utils/query_builders";
 import { DatabaseBaseObject } from "../types/database";
 import {
-	HttpStatus,
-	Message,
-	sendBadRequest,
-	sendInternalError,
-	sendResponse,
-	sendSuccessData,
-	sendSuccessEmpty,
+    HttpStatus,
+    Message,
+    sendBadRequest,
+    sendInternalError,
+    sendResponse,
+    sendSuccessData,
+    sendSuccessEmpty,
 } from "./utils/responses";
 import Database from "../db/database";
 
@@ -30,35 +30,35 @@ import Database from "../db/database";
  * @returns All rows if any
  */
 async function getAll(
-	req: Request,
-	res: Response,
-	table: string,
-	column: string
+    req: Request,
+    res: Response,
+    table: string,
+    column: string
 ) {
-	let queryString;
-	let countQueryString;
-	try {
-		queryString = `SELECT * FROM ${table} ${buildDateFilter(
-			req,
-			true,
-			false
-		)} ${buildQueryParameters(req)}`;
-		countQueryString = `SELECT COUNT(${column}) FROM ${table}`;
-	} catch (error) {
-		return sendBadRequest(res, error);
-	}
-	try {
-		const queryResult = await Database.instance.query(queryString);
-		const countQueryResult = await Database.instance.query(
-			countQueryString
-		);
-		return sendSuccessData(res, {
-			totalCount: Number(countQueryResult.rows[0].count),
-			items: queryResult.rows,
-		});
-	} catch (error) {
-		return sendInternalError(res, error);
-	}
+    let queryString;
+    let countQueryString;
+    try {
+        queryString = `SELECT * FROM ${table} ${buildDateFilter(
+            req,
+            true,
+            false
+        )} ${buildQueryParameters(req)}`;
+        countQueryString = `SELECT COUNT(${column}) FROM ${table}`;
+    } catch (error) {
+        return sendBadRequest(res, error);
+    }
+    try {
+        const queryResult = await Database.instance.query(queryString);
+        const countQueryResult = await Database.instance.query(
+            countQueryString
+        );
+        return sendSuccessData(res, {
+            totalCount: Number(countQueryResult.rows[0].count),
+            items: queryResult.rows,
+        });
+    } catch (error) {
+        return sendInternalError(res, error);
+    }
 }
 
 /**
@@ -69,23 +69,23 @@ async function getAll(
  * @returns All journeys with matching query in column
  */
 async function getColumnQuery(req: Request, res: Response, table: string) {
-	let queryString;
-	try {
-		queryString = `SELECT * FROM ${table}
+    let queryString;
+    try {
+        queryString = `SELECT * FROM ${table}
         ${buildRouteParametersColumn(req)}
         ${buildQueryParameters(req)}`;
-	} catch (error) {
-		return sendBadRequest(res, error);
-	}
-	try {
-		const queryResult = await Database.instance.query(queryString);
-		if (queryResult.rowCount > 0) {
-			return sendSuccessData(res, queryResult.rows);
-		}
-	} catch (error) {
-		return sendInternalError(res, error);
-	}
-	return sendSuccessEmpty(res);
+    } catch (error) {
+        return sendBadRequest(res, error);
+    }
+    try {
+        const queryResult = await Database.instance.query(queryString);
+        if (queryResult.rowCount > 0) {
+            return sendSuccessData(res, queryResult.rows);
+        }
+    } catch (error) {
+        return sendInternalError(res, error);
+    }
+    return sendSuccessEmpty(res);
 }
 
 /**
@@ -98,37 +98,37 @@ async function getColumnQuery(req: Request, res: Response, table: string) {
  * @returns All rows which match the given query
  */
 async function getSearch(
-	req: Request,
-	res: Response,
-	table: string,
-	stringColumns: string[],
-	numberColumns: string[]
+    req: Request,
+    res: Response,
+    table: string,
+    stringColumns: string[],
+    numberColumns: string[]
 ) {
-	let queryString;
-	try {
-		({ stringColumns, numberColumns } = filterColumns(
-			req,
-			stringColumns,
-			numberColumns
-		));
-		queryString = `SELECT *, count(*) OVER() as total_count FROM ${table}
+    let queryString;
+    try {
+        ({ stringColumns, numberColumns } = filterColumns(
+            req,
+            stringColumns,
+            numberColumns
+        ));
+        queryString = `SELECT *, count(*) OVER() as total_count FROM ${table}
 			${buildRouteParametersSearch(req, stringColumns, numberColumns)}
 			${buildQueryParameters(req)}`;
-	} catch (error) {
-		return sendBadRequest(res, error);
-	}
-	try {
-		const queryResult = await Database.instance.query(queryString);
-		if (queryResult.rowCount > 0) {
-			return sendSuccessData(res, {
-				totalCount: Number(queryResult.rows[0].total_count),
-				items: queryResult.rows,
-			});
-		}
-	} catch (error) {
-		return sendInternalError(res, error);
-	}
-	return sendSuccessEmpty(res);
+    } catch (error) {
+        return sendBadRequest(res, error);
+    }
+    try {
+        const queryResult = await Database.instance.query(queryString);
+        if (queryResult.rowCount > 0) {
+            return sendSuccessData(res, {
+                totalCount: Number(queryResult.rows[0].total_count),
+                items: queryResult.rows,
+            });
+        }
+    } catch (error) {
+        return sendInternalError(res, error);
+    }
+    return sendSuccessEmpty(res);
 }
 
 /**
@@ -141,40 +141,40 @@ async function getSearch(
  * @returns All rows inserted in the database if any
  */
 async function postInsert<T extends DatabaseBaseObject>(
-	req: Request,
-	res: Response,
-	getObject: (body: any) => T,
-	checkQueryString: string,
-	queryString: string
+    req: Request,
+    res: Response,
+    getObject: (body: unknown) => T,
+    checkQueryString: string,
+    queryString: string
 ) {
-	let object: T | undefined;
-	try {
-		object = getObject(req.body);
-		if (!object || object.hasEmptyProperties()) {
-			return sendBadRequest(
-				res,
-				"Body is not valid - must conform to the T type"
-			);
-		}
-	} catch (error) {
-		return sendBadRequest(res, error);
-	}
-	try {
-		const checkQueryResult = await Database.instance.querySafe(
-			checkQueryString,
-			object.toArray()
-		);
-		if (checkQueryResult.rowCount > 0) {
-			return sendResponse(res, HttpStatus.CONFLICT, Message.CONFLICT);
-		}
-		const queryResult = await Database.instance.querySafe(
-			queryString,
-			object.toArray()
-		);
-		return sendSuccessData(res, queryResult.rows);
-	} catch (error) {
-		return sendInternalError(res, error);
-	}
+    let object: T | undefined;
+    try {
+        object = getObject(req.body);
+        if (!object || object.hasEmptyProperties()) {
+            return sendBadRequest(
+                res,
+                "Body is not valid - must conform to the T type"
+            );
+        }
+    } catch (error) {
+        return sendBadRequest(res, error);
+    }
+    try {
+        const checkQueryResult = await Database.instance.querySafe(
+            checkQueryString,
+            object.toArray() as string[]
+        );
+        if (checkQueryResult.rowCount > 0) {
+            return sendResponse(res, HttpStatus.CONFLICT, Message.CONFLICT);
+        }
+        const queryResult = await Database.instance.querySafe(
+            queryString,
+            object.toArray() as string[]
+        );
+        return sendSuccessData(res, queryResult.rows);
+    } catch (error) {
+        return sendInternalError(res, error);
+    }
 }
 
 /**
@@ -185,20 +185,20 @@ async function postInsert<T extends DatabaseBaseObject>(
  * @returns Filtered columns
  */
 function filterColumns(
-	req: Request,
-	stringColumns: string[],
-	numberColumns: string[]
+    req: Request,
+    stringColumns: string[],
+    numberColumns: string[]
 ) {
-	const { column } = req.params;
-	if (column !== "*") {
-		stringColumns = stringColumns.filter(
-			(col) => col.indexOf(column) !== -1
-		);
-		numberColumns = numberColumns.filter(
-			(col) => col.indexOf(column) !== -1
-		);
-	}
-	return { stringColumns, numberColumns };
+    const { column } = req.params;
+    if (column !== "*") {
+        stringColumns = stringColumns.filter(
+            (col) => col.indexOf(column) !== -1
+        );
+        numberColumns = numberColumns.filter(
+            (col) => col.indexOf(column) !== -1
+        );
+    }
+    return { stringColumns, numberColumns };
 }
 
 export { getAll, getColumnQuery, getSearch, postInsert };

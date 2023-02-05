@@ -8,21 +8,21 @@ import { QUERY_NUMBER_EQUALITY_TOLERANCE } from "../../config/constants";
  * @returns The built query parameters as a string
  */
 function buildQueryParameters(req: Request) {
-	const { column, order, offset, limit } = req.query;
-	let params = "";
-	if (column && (order || offset || limit)) {
-		params += `ORDER BY ${sanitizeString(column)} `;
-		if (order) {
-			params += order;
-		}
-		if (limit) {
-			params += ` LIMIT ${sanitizeNumber(limit)}`;
-		}
-		if (offset) {
-			params += ` OFFSET ${sanitizeNumber(offset)} `;
-		}
-	}
-	return params;
+    const { column, order, offset, limit } = req.query;
+    let params = "";
+    if (column && (order || offset || limit)) {
+        params += `ORDER BY ${sanitizeString(column)} `;
+        if (order) {
+            params += order;
+        }
+        if (limit) {
+            params += ` LIMIT ${sanitizeNumber(limit)}`;
+        }
+        if (offset) {
+            params += ` OFFSET ${sanitizeNumber(offset)} `;
+        }
+    }
+    return params;
 }
 
 /**
@@ -31,8 +31,8 @@ function buildQueryParameters(req: Request) {
  * @returns WHERE clause as a string, including the WHERE keyword
  */
 function buildRouteParametersColumn(req: Request) {
-	const { column, query } = req.params;
-	return ` WHERE ${sanitizeString(column)} = ${sanitizeString(query)} `;
+    const { column, query } = req.params;
+    return ` WHERE ${sanitizeString(column)} = ${sanitizeString(query)} `;
 }
 
 /**
@@ -43,15 +43,15 @@ function buildRouteParametersColumn(req: Request) {
  * @returns Search query parameters in SQL format
  */
 function buildRouteParametersSearch(
-	req: Request,
-	stringColumns: string[],
-	numberColumns: string[]
+    req: Request,
+    stringColumns: string[],
+    numberColumns: string[]
 ) {
-	const { query } = req.params;
-	if (Number.isNaN(Number(query))) {
-		return buildRouteParametersString(req, query, stringColumns);
-	}
-	return buildRouteParametersNumber(req, query, numberColumns);
+    const { query } = req.params;
+    if (Number.isNaN(Number(query))) {
+        return buildRouteParametersString(req, query, stringColumns);
+    }
+    return buildRouteParametersNumber(req, query, numberColumns);
 }
 
 /**
@@ -62,19 +62,19 @@ function buildRouteParametersSearch(
  * @returns WHERE clause in SQL format
  */
 function buildRouteParametersNumber(
-	req: Request,
-	query: string,
-	columns: string[]
+    req: Request,
+    query: string,
+    columns: string[]
 ) {
-	let queryString = `WHERE ${sanitizeString(
-		buildDateFilter(req, false, true)
-	)} ${columns[0]} = ${sanitizeString(query)}`;
-	for (let i = 1; i < columns.length; i++) {
-		queryString += ` OR ABS(${sanitizeString(
-			columns[i]
-		)} - ${sanitizeString(query)}) <= ${QUERY_NUMBER_EQUALITY_TOLERANCE}`;
-	}
-	return queryString;
+    let queryString = `WHERE ${sanitizeString(
+        buildDateFilter(req, false, true)
+    )} ${columns[0]} = ${sanitizeString(query)}`;
+    for (let i = 1; i < columns.length; i++) {
+        queryString += ` OR ABS(${sanitizeString(
+            columns[i]
+        )} - ${sanitizeString(query)}) <= ${QUERY_NUMBER_EQUALITY_TOLERANCE}`;
+    }
+    return queryString;
 }
 
 /**
@@ -85,19 +85,19 @@ function buildRouteParametersNumber(
  * @returns WHERE clause in SQL format
  */
 function buildRouteParametersString(
-	req: Request,
-	query: string,
-	columns: string[]
+    req: Request,
+    query: string,
+    columns: string[]
 ) {
-	let queryString = `WHERE ${sanitizeString(
-		buildDateFilter(req, false, true)
-	)} ${sanitizeString(columns[0])} ILIKE '%${sanitizeString(query)}%'`;
-	for (let i = 1; i < columns.length; i++) {
-		queryString += ` OR ${sanitizeString(
-			columns[i]
-		)} ILIKE '%${sanitizeString(query)}%'`;
-	}
-	return queryString;
+    let queryString = `WHERE ${sanitizeString(
+        buildDateFilter(req, false, true)
+    )} ${sanitizeString(columns[0])} ILIKE '%${sanitizeString(query)}%'`;
+    for (let i = 1; i < columns.length; i++) {
+        queryString += ` OR ${sanitizeString(
+            columns[i]
+        )} ILIKE '%${sanitizeString(query)}%'`;
+    }
+    return queryString;
 }
 
 /**
@@ -108,29 +108,29 @@ function buildRouteParametersString(
  * @returns A string in the format "WHERE/AND EXTRACT(dateType FROM dateColumn) = dateNumber AND/"
  */
 function buildDateFilter(req: Request, addWhere: boolean, addAnd: boolean) {
-	const { dateType, dateColumn, dateNumber } = req.query;
-	let queryString = "";
-	if (dateType && dateColumn && dateNumber) {
-		queryString = `${addWhere ? "WHERE " : ""}EXTRACT(${sanitizeString(
-			dateType
-		)} FROM ${sanitizeString(dateColumn)}) = ${sanitizeNumber(
-			dateNumber
-		)} ${addAnd ? "AND " : ""}`;
-	}
-	return queryString;
+    const { dateType, dateColumn, dateNumber } = req.query;
+    let queryString = "";
+    if (dateType && dateColumn && dateNumber) {
+        queryString = `${addWhere ? "WHERE " : ""}EXTRACT(${sanitizeString(
+            dateType
+        )} FROM ${sanitizeString(dateColumn)}) = ${sanitizeNumber(
+            dateNumber
+        )} ${addAnd ? "AND " : ""}`;
+    }
+    return queryString;
 }
 
-function sanitizeString(val: any) {
-	return sanitize.escape(val).replace(/'/g, "");
+function sanitizeString(val: unknown) {
+    return sanitize.escape(val).replace(/'/g, "");
 }
 
-function sanitizeNumber(val: any) {
-	return sanitize.escape(Number(val));
+function sanitizeNumber(val: unknown) {
+    return sanitize.escape(Number(val));
 }
 
 export {
-	buildQueryParameters,
-	buildRouteParametersColumn,
-	buildRouteParametersSearch,
-	buildDateFilter,
+    buildQueryParameters,
+    buildRouteParametersColumn,
+    buildRouteParametersSearch,
+    buildDateFilter,
 };

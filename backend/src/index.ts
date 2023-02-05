@@ -10,15 +10,15 @@ env.config();
 
 Database.instantiate(startApp);
 
-async function startApp() {
-	const app = express();
-	app.use(bodyParser.json());
-	app.use(cors({ origin: process.env.APP_CORS_DOMAIN }));
-	app.use("/journeys", journeyRouter);
-	app.use("/stations", stationsRouter);
-	app.listen(process.env.APP_PORT, () => {
-		console.log(
-			`Listening to incoming connections on port ${process.env.APP_PORT}`
-		);
-	});
+function startApp() {
+    const app = express();
+    app.use(bodyParser.json());
+    app.use(cors({ origin: process.env.APP_CORS_DOMAIN }));
+    app.use("/journeys", journeyRouter);
+    app.use("/stations", stationsRouter);
+    app.listen(process.env.APP_PORT, () => {
+        console.log(
+            `Listening to incoming connections on port ${process.env.APP_PORT}`
+        );
+    });
 }

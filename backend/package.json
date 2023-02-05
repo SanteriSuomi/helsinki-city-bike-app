@@ -1,36 +1,40 @@
 {
-	"name": "helsinki-city-bike-app-backend",
-	"version": "1.0.0",
-	"description": "Helsinki city bike app",
-	"main": "dist/index.js",
-	"scripts": {
-		"start": "tsc && node .",
-		"dev": "conc \"tsc --watch\" \"nodemon .\" ",
-		"test": "echo \"Error: no test specified\" && exit 1",
-		"build": "npm install && tsc"
-	},
-	"author": "Santeri Suomi",
-	"license": "ISC",
-	"dependencies": {
-		"cors": "^2.8.5",
-		"dotenv": "^16.0.3",
-		"express": "^4.18.2",
-		"moment": "^2.29.4",
-		"papaparse": "^5.3.2",
-		"pg": "^8.8.0",
-		"sqlstring": "^2.3.3",
-		"typescript": "^4.9.4",
-		"pg-format": "^1.0.4"
-	},
-	"devDependencies": {
-		"@tsconfig/recommended": "^1.0.1",
-		"@types/cors": "^2.8.13",
-		"@types/express": "^4.17.15",
-		"@types/papaparse": "^5.3.7",
-		"@types/pg": "^8.6.6",
-		"@types/pg-format": "^1.0.2",
-		"@types/sqlstring": "^2.3.0",
-		"concurrently": "^7.6.0",
-		"nodemon": "^2.0.20"
-	}
+    "name": "helsinki-city-bike-app-backend",
+    "version": "1.0.0",
+    "description": "Helsinki city bike app backend",
+    "main": "dist/index.js",
+    "scripts": {
+        "start": "tsc && node .",
+        "dev": "conc \"tsc --watch\" \"nodemon .\" ",
+        "build": "npm install && tsc",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Santeri Suomi",
+    "license": "ISC",
+    "dependencies": {
+        "cors": "^2.8.5",
+        "dotenv": "^16.0.3",
+        "express": "^4.18.2",
+        "moment": "^2.29.4",
+        "papaparse": "^5.3.2",
+        "pg": "^8.8.0",
+        "pg-format": "^1.0.4",
+        "sqlstring": "^2.3.3"
+    },
+    "devDependencies": {
+        "@tsconfig/recommended": "^1.0.1",
+        "@types/cors": "^2.8.13",
+        "@types/express": "^4.17.15",
+        "@types/papaparse": "^5.3.7",
+        "@types/pg": "^8.6.6",
+        "@types/pg-format": "^1.0.2",
+        "@types/sqlstring": "^2.3.0",
+        "@typescript-eslint/eslint-plugin": "^5.50.0",
+        "@typescript-eslint/parser": "^5.50.0",
+        "concurrently": "^7.6.0",
+        "eslint": "^8.33.0",
+        "nodemon": "^2.0.20",
+        "ts-node": "^10.9.1",
+        "typescript": "^4.9.5"
+    }
 }

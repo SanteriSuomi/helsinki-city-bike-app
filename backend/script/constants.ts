@@ -1,6 +1,9 @@
 const APP_STATIONS_TABLE = "stations";
 const APP_JOURNEYS_TABLE = "journeys";
 
+const MIN_ROWCOUNT_JOURNEYS = 10_000;
+const MIN_ROWCOUNT_STATIONS = 100;
+
 const JOURNEY_MIN_DISTANCE = 10;
 const JOURNEY_MIN_DURATION = 10;
 
@@ -8,81 +11,81 @@ const JOURNEY_MAX_DISTANCE = 100000;
 const JOURNEY_MAX_DURATION = 86400;
 
 const APP_DATA_JOURNEYS_VALIDATION_RULES = [
-	{
-		index: 0,
-		isString: true,
-		isDate: true,
-	},
-	{
-		index: 1,
-		isString: true,
-		isDate: true,
-	},
-	{
-		index: 2,
-		isNumber: true,
-	},
-	{
-		index: 3,
-		isString: true,
-	},
-	{
-		index: 4,
-		isNumber: true,
-	},
-	{
-		index: 5,
-		isString: true,
-	},
-	{
-		index: 6,
-		isNumber: true,
-	},
-	{
-		index: 7,
-		isNumber: true,
-	},
-	{
-		index: 6,
-		customCheck: (field: string) => {
-			const number = Number(field);
-			return (
-				number >= JOURNEY_MIN_DISTANCE && number <= JOURNEY_MAX_DISTANCE
-			);
-		},
-	},
-	{
-		index: 7,
-		customCheck: (field: string) => {
-			const number = Number(field);
-			return (
-				number >= JOURNEY_MIN_DURATION && number <= JOURNEY_MAX_DURATION
-			);
-		},
-	},
+    {
+        index: 0,
+        isString: true,
+        isDate: true,
+    },
+    {
+        index: 1,
+        isString: true,
+        isDate: true,
+    },
+    {
+        index: 2,
+        isNumber: true,
+    },
+    {
+        index: 3,
+        isString: true,
+    },
+    {
+        index: 4,
+        isNumber: true,
+    },
+    {
+        index: 5,
+        isString: true,
+    },
+    {
+        index: 6,
+        isNumber: true,
+    },
+    {
+        index: 7,
+        isNumber: true,
+    },
+    {
+        index: 6,
+        customCheck: (field: string) => {
+            const number = Number(field);
+            return (
+                number >= JOURNEY_MIN_DISTANCE && number <= JOURNEY_MAX_DISTANCE
+            );
+        },
+    },
+    {
+        index: 7,
+        customCheck: (field: string) => {
+            const number = Number(field);
+            return (
+                number >= JOURNEY_MIN_DURATION && number <= JOURNEY_MAX_DURATION
+            );
+        },
+    },
 ];
 
 const APP_DATA_STATIONS_VALIDATION_RULES = [
-	{
-		index: 1,
-		isNumber: true,
-	},
-	{
-		index: 2,
-		isString: true,
-	},
-	{
-		index: 5,
-		isString: true,
-	},
-	{
-		index: 11,
-		isNumber: true,
-	},
-	{
-		index: 12,
-		isNumber: true,
-	},
+    {
+        index: 1,
+        isNumber: true,
+    },
+    {
+        index: 2,
+        isString: true,
+    },
+    {
+        index: 5,
+        isString: true,
+    },
+    {
+        index: 11,
+        isNumber: true,
+    },
+    {
+        index: 12,
+        isNumber: true,
+    },
 ];
 
 const APP_STATIONS_TABLE_CREATE_QUERY = `CREATE TABLE stations (
@@ -128,19 +131,21 @@ CREATE INDEX return_station_name_index ON journeys (return_station_name);
 CREATE INDEX covered_distance_index ON journeys (covered_distance);
 CREATE INDEX duration_index ON journeys (duration);`;
 const APP_JOURNEYS_TABLE_STRING_COLUMNS =
-	"departure_date::text return_date::text departure_station_name return_station_name";
+    "departure_date::text return_date::text departure_station_name return_station_name";
 const APP_JOURNEYS_TABLE_NUMBER_COLUMNS =
-	"departure_station_id return_station_id covered_distance duration";
+    "departure_station_id return_station_id covered_distance duration";
 
 export {
-	APP_STATIONS_TABLE,
-	APP_JOURNEYS_TABLE,
-	APP_DATA_JOURNEYS_VALIDATION_RULES,
-	APP_DATA_STATIONS_VALIDATION_RULES,
-	APP_STATIONS_TABLE_CREATE_QUERY,
-	APP_STATIONS_TABLE_INDEX_QUERY,
-	APP_JOURNEYS_TABLE_CREATE_QUERY,
-	APP_JOURNEYS_TABLE_INDEX_QUERY,
-	APP_JOURNEYS_TABLE_STRING_COLUMNS,
-	APP_JOURNEYS_TABLE_NUMBER_COLUMNS,
+    APP_STATIONS_TABLE,
+    APP_JOURNEYS_TABLE,
+    APP_DATA_JOURNEYS_VALIDATION_RULES,
+    APP_DATA_STATIONS_VALIDATION_RULES,
+    APP_STATIONS_TABLE_CREATE_QUERY,
+    APP_STATIONS_TABLE_INDEX_QUERY,
+    APP_JOURNEYS_TABLE_CREATE_QUERY,
+    APP_JOURNEYS_TABLE_INDEX_QUERY,
+    APP_JOURNEYS_TABLE_STRING_COLUMNS,
+    APP_JOURNEYS_TABLE_NUMBER_COLUMNS,
+    MIN_ROWCOUNT_JOURNEYS,
+    MIN_ROWCOUNT_STATIONS
 };
